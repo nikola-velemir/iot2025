@@ -1,4 +1,4 @@
-from sensors.door_light.event import DoorStateChanged
+from sensors.door_sensor.event import DoorStateChanged
 from sensors.door_sensor.input import ButtonInput
 
 

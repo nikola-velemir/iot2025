@@ -1,6 +1,8 @@
 import threading
 import time
 
+from sensors.buzzer.output import SimulatedBuzzer
+from sensors.buzzer.sensor import DoorBuzzer
 from sensors.door_light.input import SimulatedLightInput
 from sensors.door_light.sensor import DoorLightSensor
 from sensors.door_sensor.input import SimulatedButton
@@ -22,9 +24,7 @@ def run_door_sensor(config, threads, stop_event):
     door_sensor = DoorSensor(SimulatedButton())
     light_sensor = DoorLightSensor(SimulatedLightInput())
 
-    # 🔗 subscription
     door_sensor.subscribe(light_sensor.handle_door_event)
-
     simulator_thread = threading.Thread(
         name="DS1-simulator",
         target=run_door_sensor_simulator,
