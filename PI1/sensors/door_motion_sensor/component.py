@@ -1,3 +1,4 @@
+from logger.logger import log
 from sensors.buzzer.output import SimulatedBuzzer
 from sensors.buzzer.sensor import DoorBuzzer
 from sensors.door_motion_sensor.input import SimulatedMotionInput
@@ -16,7 +17,7 @@ def run_motion_sensor(config, threads, stop_event):
     if not config.get('simulated', False):
         return
 
-    print("Starting Motion sensor simulator")
+    log("Starting Motion sensor simulator")
 
     interval = config.get('motion_toggle_interval', 2)
     poll_interval = config.get('poll_interval', 0.1)
@@ -45,4 +46,4 @@ def run_motion_sensor(config, threads, stop_event):
 
     threads.extend([simulator_thread, poller_thread])
 
-    print("Motion sensor simulator started")
+    log("Motion sensor simulator started")

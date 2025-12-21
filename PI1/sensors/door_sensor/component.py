@@ -1,6 +1,7 @@
 import threading
 import time
 
+from logger.logger import log
 from sensors.buzzer.output import SimulatedBuzzer
 from sensors.buzzer.sensor import DoorBuzzer
 from sensors.door_light.input import SimulatedLightInput
@@ -19,7 +20,7 @@ def run_door_sensor(config, threads, stop_event):
     if not config['simulated']:
         return
 
-    print("Starting DS1 simulator")
+    log("Starting DS1 simulator")
 
     door_sensor = DoorSensor(SimulatedButton())
     light_sensor = DoorLightSensor(SimulatedLightInput())
@@ -44,4 +45,4 @@ def run_door_sensor(config, threads, stop_event):
 
     threads.extend([simulator_thread, poller_thread])
 
-    print("DS1 simulator started")
+    log("DS1 simulator started")

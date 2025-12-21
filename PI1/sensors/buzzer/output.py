@@ -1,5 +1,8 @@
 from abc import ABC, abstractmethod
 
+from logger.logger import log
+
+
 class BuzzerOutput(ABC):
     @abstractmethod
     def on(self):
@@ -16,9 +19,9 @@ class SimulatedBuzzer(BuzzerOutput):
     def on(self):
         if not self._state:
             self._state = True
-            print("Buzzer ON!")
+            log("Buzzer ON!")
 
     def off(self):
         if self._state:
             self._state = False
-            print("Buzzer OFF!")
+            log("Buzzer OFF!")

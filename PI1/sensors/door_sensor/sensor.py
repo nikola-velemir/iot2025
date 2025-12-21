@@ -1,3 +1,4 @@
+from logger.logger import log
 from sensors.door_sensor.event import DoorStateChanged
 from sensors.door_sensor.input import ButtonInput
 
@@ -23,7 +24,7 @@ class DoorSensor(object):
             self.on_state_change(event)
 
     def on_state_change(self, event:DoorStateChanged):
-        print("Door is OPEN" if event.is_open else "Door is CLOSED")
+        log("Door is OPEN" if event.is_open else "Door is CLOSED")
 
         for subscriber in self._subscribers:
             subscriber(event)

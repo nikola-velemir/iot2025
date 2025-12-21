@@ -1,3 +1,4 @@
+from logger.logger import log
 from sensors.door_motion_sensor.event import MotionStateChanged
 from sensors.door_motion_sensor.input import MotionInput
 
@@ -18,6 +19,6 @@ class DoorMotionSensor:
             self.on_motion_change(event)
 
     def on_motion_change(self, event: MotionStateChanged):
-        print("Motion detected!" if event.motion_detected else "No motion")
+        log("Motion detected!" if event.motion_detected else "No motion")
         for subscriber in self._subscribers:
             subscriber(event)

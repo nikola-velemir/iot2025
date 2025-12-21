@@ -1,3 +1,4 @@
+from logger.logger import log
 from sensors.door_ultra_sonic.input import UltrasonicInput
 
 
@@ -14,4 +15,4 @@ class UltrasonicSensor:
             self.on_distance_change(distance)
 
     def on_distance_change(self, distance: float):
-        print(f"Distance: {distance:.2f} m")
+        log(f"Distance: {distance:.2f} m")

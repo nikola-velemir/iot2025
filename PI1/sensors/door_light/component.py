@@ -1,5 +1,6 @@
 import threading
 
+from logger.logger import log
 from sensors.door_light.input import SimulatedLightInput
 from sensors.door_light.sensor import DoorLightSensor
 from sensors.door_light.simulator import run_door_light_sensor_simulator
@@ -15,7 +16,7 @@ def run_door_light_sensor(config, threads, stop_event):
     if not config.get('simulated', False):
         return
 
-    print("Starting LS1 simulator")
+    log("Starting LS1 simulator")
 
     delay = config.get('toggle_interval', 2)
     poll_interval = config.get('poll_interval', 0.1)
@@ -41,4 +42,4 @@ def run_door_light_sensor(config, threads, stop_event):
 
     threads.extend([simulator_thread, poller_thread])
 
-    print("LS1 simulator started")
+    log("LS1 simulator started")

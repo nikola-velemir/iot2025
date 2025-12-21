@@ -1,24 +1,13 @@
-# This is a sample Python script.
 import threading
 import time
 
+from actuators.keypad.component import run_keypad
 from config import load_config
-from sensors.door_light.component import run_door_light_sensor
+from logger.logger import log, logger_loop
 from sensors.door_motion_sensor.component import run_motion_sensor
 from sensors.door_sensor.component import run_door_sensor
 from sensors.door_ultra_sonic.component import run_ultrasonic_sensor
 
-
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
-
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
     config = load_config()
     print(config)
@@ -32,11 +21,18 @@ if __name__ == '__main__':
 
         dpir1_settings = config['DPIR1']
         run_motion_sensor(dpir1_settings, threads, stop_event)
+        dms_settings = config['DMS']
+        run_keypad(dms_settings, threads,stop_event)
+        threading.Thread(
+            target=logger_loop,
+            args=(stop_event,),
+            daemon=True
+        ).start()
         while True:
             time.sleep(1)
 
     except KeyboardInterrupt:
-        print('Stopping app')
+        log('Stopping app')
         for t in threads:
             stop_event.set()
 

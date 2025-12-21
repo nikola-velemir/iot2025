@@ -1,3 +1,4 @@
+from logger.logger import log
 from sensors.door_ultra_sonic.input import SimulatedUltrasonicInput
 from sensors.door_ultra_sonic.sensor import UltrasonicSensor
 import threading
@@ -15,7 +16,7 @@ def run_ultrasonic_sensor(config, threads, stop_event):
     if not config.get('simulated', False):
         return
 
-    print("Starting Ultrasonic simulator")
+    log("Starting Ultrasonic simulator")
 
     interval = config.get('poll_interval', 0.2)
     sensor = UltrasonicSensor(SimulatedUltrasonicInput())
@@ -30,4 +31,4 @@ def run_ultrasonic_sensor(config, threads, stop_event):
     poller_thread.start()
     threads.append(poller_thread)
 
-    print("Ultrasonic simulator started")
+    log("Ultrasonic simulator started")
