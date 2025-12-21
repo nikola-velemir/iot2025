@@ -1,33 +1,35 @@
+import sys
 import threading
 import time
-
-from actuators.keypad.actuator import KeyPad
-from actuators.keypad.input import SimulatedKeypad
-from actuators.keypad.simulator import run_keypad_simulator
+import select
+import termios
+import tty
 from logger.logger import log
+from sensors.keypad.sensor import KeyPad
+from sensors.keypad.input import SimulatedKeypad
+from sensors.keypad.simulator import simulated_keypad_input_loop
 
+VALID_KEYS = "0123456789ABCD*#"
 
-def run_keypad_polling(sensor, stop_event, interval=0.05):
+def run_keypad_polling(sensor, stop_event, interval=0.1):
     while not stop_event.is_set():
         sensor.poll()
         stop_event.wait(interval)
 
-
 def run_keypad(config, threads, stop_event):
     if not config.get("simulated", False):
-        # Later: GPIO keypad implementation
         return
 
     log("Starting KEYPAD simulator")
 
-    poll_interval = config.get("poll_interval", 0.05)
+    poll_interval = config.get("poll_interval", 0.1)
 
     keypad_input = SimulatedKeypad()
     keypad_sensor = KeyPad(keypad_input)
 
     simulator_thread = threading.Thread(
         name="KEYPAD-simulator",
-        target=run_keypad_simulator,
+        target=simulated_keypad_input_loop,
         args=(keypad_input, stop_event),
         daemon=True
     )
@@ -41,7 +43,6 @@ def run_keypad(config, threads, stop_event):
 
     simulator_thread.start()
     poller_thread.start()
-
     threads.extend([simulator_thread, poller_thread])
 
     log("KEYPAD simulator started")

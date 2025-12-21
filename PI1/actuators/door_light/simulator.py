@@ -1,4 +1,4 @@
-from sensors.door_light.sensor import DoorLightSensor
+from actuators.door_light.actuator import DoorLightSensor
 
 
 def run_door_light_sensor_simulator(delay, light_sensor:DoorLightSensor, stop_event):

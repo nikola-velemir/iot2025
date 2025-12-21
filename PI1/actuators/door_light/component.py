@@ -1,9 +1,9 @@
 import threading
 
 from logger.logger import log
-from sensors.door_light.input import SimulatedLightInput
-from sensors.door_light.sensor import DoorLightSensor
-from sensors.door_light.simulator import run_door_light_sensor_simulator
+from actuators.door_light.input import SimulatedLightInput
+from actuators.door_light.actuator import DoorLightSensor
+from actuators.door_light.simulator import run_door_light_sensor_simulator
 
 
 def run_door_light_sensor_polling(sensor, stop_event, interval=0.1):

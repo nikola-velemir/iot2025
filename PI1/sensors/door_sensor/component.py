@@ -2,10 +2,8 @@ import threading
 import time
 
 from logger.logger import log
-from sensors.buzzer.output import SimulatedBuzzer
-from sensors.buzzer.sensor import DoorBuzzer
-from sensors.door_light.input import SimulatedLightInput
-from sensors.door_light.sensor import DoorLightSensor
+from actuators.door_light.input import SimulatedLightInput
+from actuators.door_light.actuator import DoorLightSensor
 from sensors.door_sensor.input import SimulatedButton
 from sensors.door_sensor.sensor import DoorSensor
 from sensors.door_sensor.simulator import run_door_sensor_simulator

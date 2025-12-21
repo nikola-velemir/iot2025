@@ -1,6 +1,6 @@
 from logger.logger import log
 from sensors.door_sensor.event import DoorStateChanged
-from sensors.door_light.input import LightInput
+from actuators.door_light.input import LightInput
 
 
 class DoorLightSensor(object):

@@ -1,4 +1,4 @@
-from actuators.keypad.input import KeypadInput
+from sensors.keypad.input import KeypadInput
 from logger.logger import log
 
 

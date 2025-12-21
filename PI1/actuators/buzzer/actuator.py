@@ -1,4 +1,4 @@
-from sensors.buzzer.output import BuzzerOutput
+from actuators.buzzer.output import BuzzerOutput
 from sensors.door_motion_sensor.event import MotionStateChanged
 
 
