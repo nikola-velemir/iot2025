@@ -21,9 +21,7 @@ def run_door_sensor(config, threads, stop_event):
     log("Starting DS1 simulator")
 
     door_sensor = DoorSensor(SimulatedButton())
-    light_sensor = DoorLightSensor(SimulatedLightInput())
 
-    door_sensor.subscribe(light_sensor.handle_door_event)
     simulator_thread = threading.Thread(
         name="DS1-simulator",
         target=run_door_sensor_simulator,

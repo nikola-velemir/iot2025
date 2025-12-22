@@ -1,6 +1,8 @@
 import threading
 import time
 
+from shared.actuators.door_light.component import run_door_light_sensor
+from shared.actuators.input_loop import run_simulated_inputs
 from shared.config import load_config
 from shared.logger.logger import log, logger_loop
 from shared.sensors.door_motion_sensor.component import run_motion_sensor
@@ -22,12 +24,17 @@ if __name__ == '__main__':
         dpir1_settings = config['DPIR1']
         run_motion_sensor(dpir1_settings, threads, stop_event)
         dms_settings = config['DMS']
-        run_keypad(dms_settings, threads,stop_event)
+
+        dl_setting = config['DL']
+        dms_setting = config['DMS']
+        buzz_setting = config['DB']
+        run_simulated_inputs(dl_setting, dms_setting, buzz_setting, threads, stop_event)
         threading.Thread(
             target=logger_loop,
             args=(stop_event,),
             daemon=True
         ).start()
+
         while True:
             time.sleep(1)
 

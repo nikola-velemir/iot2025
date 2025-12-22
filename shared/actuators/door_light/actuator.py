@@ -20,3 +20,9 @@ class DoorLightSensor(object):
             self.name + ": " +
             "Light is ON" if is_light else "Light is OFF"
         )
+    def poll(self):
+        """Optional: just report current state."""
+        current_state = self.light.is_light()
+        if current_state != self._last_state:
+            self._last_state = current_state
+            self.on_state_change(current_state)

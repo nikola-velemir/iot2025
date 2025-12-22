@@ -24,9 +24,6 @@ def run_motion_sensor(config, threads, stop_event):
 
     motion_sensor = DoorMotionSensor(SimulatedMotionInput())
 
-    buzzer = DoorBuzzer(SimulatedBuzzer())
-
-    motion_sensor.subscribe(buzzer.handle_motion_event)
     simulator_thread = threading.Thread(
         name="Motion-simulator",
         target=run_motion_sensor_simulator,
