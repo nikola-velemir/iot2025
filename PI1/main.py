@@ -1,15 +1,15 @@
 import threading
 import time
 
-from config import load_config
-from logger.logger import log, logger_loop
-from sensors.door_motion_sensor.component import run_motion_sensor
-from sensors.door_sensor.component import run_door_sensor
-from sensors.door_ultra_sonic.component import run_ultrasonic_sensor
-from sensors.keypad.component import run_keypad
+from shared.config import load_config
+from shared.logger.logger import log, logger_loop
+from shared.sensors.door_motion_sensor.component import run_motion_sensor
+from shared.sensors.door_sensor.component import run_door_sensor
+from shared.sensors.door_ultra_sonic.component import run_ultrasonic_sensor
+from shared.sensors.keypad.component import run_keypad
 
 if __name__ == '__main__':
-    config = load_config()
+    config = load_config("PI1/config.json")
     print(config)
     threads = []
     stop_event = threading.Event()
