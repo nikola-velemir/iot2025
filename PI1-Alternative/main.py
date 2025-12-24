@@ -11,7 +11,7 @@ from shared.sensors.door_ultra_sonic.component import run_ultrasonic_sensor
 from shared.sensors.keypad.component import run_keypad
 
 if __name__ == '__main__':
-    config = load_config("PI1/config.json")
+    config = load_config("PI1-Alternative/config.json")
     print(config)
     threads = []
     stop_event = threading.Event()
