@@ -1,15 +1,38 @@
+from shared.actuators.subscriber import Subscriber
+from shared.mqtt.mqtt_data_point import MqttDataPoint
+from shared.mqtt.mqtt_send import MqttBatchClient
 from shared.sensors.keypad.input import KeypadInput
 from shared.logger.logger import log
 
 
 class KeyPad:
-    def __init__(self, keypad: KeypadInput):
+    def __init__(self, keypad: KeypadInput, name, device_name, mqtt_client):
         self.keypad = keypad
+        self._subscribers = []
+        self.name = name
+        self.device_name = device_name
+        self.mqtt_client: MqttBatchClient = mqtt_client
 
-    def on_key_pressed(self, key: str):
-        log(f"[KEYPAD] Key pressed: {key}")
+    def subscribe(self, subscriber: Subscriber):
+        self._subscribers.append(subscriber.callback)
 
     def poll(self):
         key = self.keypad.read_key()
         if key:
             self.on_key_pressed(key)
+
+    def on_key_pressed(self, key: str):
+        self.mqtt_client.send(
+            MqttDataPoint(
+                "KeypadSensor",
+                self.device_name,
+                self.name,
+                key,
+                self.keypad.is_simulated()
+            )
+        )
+
+        log(f"[KEYPAD] Key pressed: {key}")
+
+        for subscriber in self._subscribers:
+            subscriber(key)

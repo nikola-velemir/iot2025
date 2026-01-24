@@ -1,0 +1,101 @@
+import json
+import time
+import threading
+from queue import Queue, Empty
+import paho.mqtt.client as mqtt
+
+from shared.mqtt.mqtt_data_point import MqttDataPoint
+
+BROKER = "localhost"
+PORT = 1883
+TOPIC = "test/topic"
+
+
+class MqttBatchClient:
+    def __init__(self, batch_size=10, flush_interval=5.0):
+        self.batch_size = batch_size
+        self.flush_interval = flush_interval
+        self.queue = Queue()
+
+        self.client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2)
+        self.client.on_connect = self._on_connect
+
+        self.client.connect(BROKER, PORT, keepalive=60)
+        self.client.loop_start()
+
+        self.running = True
+        self.worker_thread = threading.Thread(target=self._batch_worker, daemon=True)
+        self.worker_thread.start()
+
+    @staticmethod
+    def _on_connect(_client, _userdata, _flags, rc, _properties=None):
+        if rc == 0:
+            print(f"Connected to {BROKER}")
+        else:
+            print(f"Connection failed: {rc}")
+
+    def send(self, payload: MqttDataPoint):
+        self.queue.put(payload)
+
+    def _batch_worker(self):
+        batch = []
+        last_flush = time.time()
+
+        while self.running:
+            try:
+                item = self.queue.get(timeout=0.1)
+                batch.append(item)
+            except Empty:
+                pass
+
+            current_time = time.time()
+            if len(batch) >= self.batch_size or (len(batch) > 0 and (current_time - last_flush) > self.flush_interval):
+                self._flush(batch)
+                batch = []
+                last_flush = current_time
+
+    def _flush(self, batch):
+        for data_point in batch:
+            dynamic_topic = f"sensors_actuators/{data_point.type_name}"
+
+            payload = json.dumps({
+                "name": data_point.name,
+                "device_name": data_point.device_name,
+                "value": data_point.value,
+                "is_simulated": data_point.is_simulated,
+                "time": data_point.time
+            })
+
+            self.client.publish(dynamic_topic, payload=payload, qos=1)
+
+        print(f"Flushed {len(batch)} points to their respective topics.")
+
+    def stop(self):
+        self.running = False
+        self.worker_thread.join()
+        remaining = []
+        while not self.queue.empty():
+            remaining.append(self.queue.get())
+        if remaining:
+            self._flush(remaining)
+
+        self.client.loop_stop()
+        self.client.disconnect()
+
+
+if __name__ == "__main__":
+    mqtt_service = MqttBatchClient(batch_size=10, flush_interval=5.0)
+
+    try:
+        print("Sending 25 messages rapidly...")
+        for i in range(25):
+            mqtt_service.send(MqttDataPoint("PI1", "name1", 15, True))
+            time.sleep(0.1)
+
+        print("Waiting for final time-based flush...")
+        time.sleep(10)
+
+    except KeyboardInterrupt:
+        pass
+    finally:
+        mqtt_service.stop()

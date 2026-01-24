@@ -2,10 +2,8 @@ from shared.logger.logger import log
 
 VALID_KEYS = "0123456789ABCD*#"
 
-DEBOUNCE_TIME = 0.2  # seconds
-
-
-def simulated_keypad_input_loop(keypad_input, stop_event):
+def simulated_keypad_input_loop(keypad_sensor, stop_event):
+    keypad = keypad_sensor.keypad
     log("Keypad ready: enter keys (0-9 A-D * #). Type Q to quit.")
 
     while not stop_event.is_set():
@@ -23,7 +21,7 @@ def simulated_keypad_input_loop(keypad_input, stop_event):
             break
 
         if len(line) == 1 and line in VALID_KEYS:
-            keypad_input.press_key(line)
+            keypad.press_key(line)
             log(f"[KEYPAD] Key pressed: {line}")
         else:
             # Explicitly ignore everything else

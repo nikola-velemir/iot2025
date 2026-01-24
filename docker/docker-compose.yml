@@ -1,0 +1,51 @@
+services:
+  influxdb:
+    image: influxdb:2
+    container_name: iot-influx-db
+    ports: ["8086:8086"]
+    volumes:
+      - influxdb_data_iot:/var/lib/influxdb2
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=admin123456
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=WDpF25Im48BaRc7bEn0BzCZkDZpPUVmVvjsYz2A0m5LhxJGBTMyf9PElvy7xzWG8N9Zh7-zN9M7-lIbGtofh3g==
+      - DOCKER_INFLUXDB_INIT_ORG=iot
+      - DOCKER_INFLUXDB_INIT_BUCKET=iotBucket
+      - DOCKET_INFLUXDB_INIT_RETENTION=0
+
+  grafana:
+    image: grafana/grafana-enterprise:latest
+    container_name: grafana
+    ports: ["3000:3000"]
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasource.yml
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin123456
+      - GF_SECURITY_ADMIN_USER=admin
+
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    container_name: mosquitto
+    restart: always
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf
+      - mosquitto_data:/mosquitto/data
+
+  telegraf:
+    image: telegraf:latest
+    volumes:
+      - ./telegraf.conf:/etc/telegraf/telegraf.conf:ro
+    depends_on:
+      - influxdb
+      - mosquitto
+
+volumes:
+  grafana_data:
+  influxdb_data_iot:
+  mosquitto_data:
+

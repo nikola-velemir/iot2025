@@ -1,28 +1,48 @@
+from shared.actuators.subscriber import Subscriber
 from shared.logger.logger import log
+from shared.mqtt.mqtt_data_point import MqttDataPoint
+from shared.mqtt.mqtt_send import MqttBatchClient
 from shared.sensors.door_sensor.event import DoorStateChanged
-from shared.actuators.door_light.input import LightInput
+from shared.actuators.door_light.output import LightOutput
 
 
-class DoorLightSensor(object):
-    def __init__(self, light: LightInput, name: str = "DL1"):
+class DoorLightActuator(Subscriber):
+    def __init__(self, light: LightOutput, name, device_name, mqtt_client):
         self.light = light
         self._last_state = None
         self.name = name
+        self.device_name = device_name
+        self.mqtt_client: MqttBatchClient = mqtt_client
 
-    def handle_door_event(self,event:DoorStateChanged):
+    def callback(self, event):
+        if not isinstance(event, DoorStateChanged):
+            return
+
         if event.is_open:
             self.light.turn_on()
         else:
             self.light.turn_off()
         self.on_state_change(event.is_open)
-    def on_state_change(self, is_light: bool):
-        log(
-            self.name + ": " +
-            "Light is ON" if is_light else "Light is OFF"
-        )
+
     def poll(self):
         """Optional: just report current state."""
         current_state = self.light.is_light()
         if current_state != self._last_state:
             self._last_state = current_state
             self.on_state_change(current_state)
+
+    def on_state_change(self, is_light: bool):
+        self.mqtt_client.send(
+            MqttDataPoint(
+                "LightActuator",
+                self.device_name,
+                self.name,
+                is_light,
+                self.light.is_simulated()
+            )
+        )
+
+        log(
+            self.name + ": " +
+            "Light is ON" if is_light else "Light is OFF"
+        )
