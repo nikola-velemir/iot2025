@@ -36,3 +36,5 @@ class KeyPad:
 
         for subscriber in self._subscribers:
             subscriber(key)
+
+

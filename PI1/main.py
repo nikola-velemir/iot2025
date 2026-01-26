@@ -26,7 +26,7 @@ if __name__ == '__main__':
     try:
         run_door_sensor(config['DS1'], threads, stop_event, mqtt_client, "DS1", "PI1", [door_buzzer, door_light])
         run_ultrasonic_sensor(config['DUS1'], threads, stop_event, mqtt_client, "DUS1", "PI1")
-        run_motion_sensor(config['DPIR1'], threads, stop_event, mqtt_client, "DPIR1", "PI1")
+        run_motion_sensor(config['DPIR1'], threads, stop_event, mqtt_client, "DPIR1", "PI1", [door_buzzer])
         run_keypad(config['DMS1'], threads,stop_event, mqtt_client, "DMS1", "PI1")
 
         threading.Thread(

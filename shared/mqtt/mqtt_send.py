@@ -89,7 +89,7 @@ if __name__ == "__main__":
     try:
         print("Sending 25 messages rapidly...")
         for i in range(25):
-            mqtt_service.send(MqttDataPoint("PI1", "name1", 15, True))
+            mqtt_service.send(MqttDataPoint("PI1", "name1", 15, 0.4,True))
             time.sleep(0.1)
 
         print("Waiting for final time-based flush...")
