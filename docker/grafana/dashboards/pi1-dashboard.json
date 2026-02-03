@@ -80,7 +80,7 @@
           "refId": "A"
         }
       ],
-      "title": "New panel",
+      "title": "DMS - PI1's keypad",
       "type": "table"
     },
     {
@@ -559,5 +559,5 @@
   "timezone": "",
   "title": "PI1",
   "uid": "ddaacbac-473a-4982-a690-9c22cd365de1",
-  "version": 4
+  "version": 7
 }
