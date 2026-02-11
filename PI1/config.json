@@ -2,31 +2,46 @@
   "DS1": {
     "description": "Door Sensor (Button)",
     "simulated": true,
-    "pin": -1
+    "pins": {
+      "a": 15,
+      "b": 14,
+      "c": 13,
+      "d": 12
+    }
   },
   "DL": {
     "description": "Door Light (LED diode)",
     "simulated": true,
-    "pin": -1
+    "pins": {
+      "a": 22,
+      "b": 34,
+      "c": 11,
+      "d": 0
+    }
   },
   "DUS1": {
     "description": "Door Ultrasonic Sensor",
     "simulated": true,
-    "pin": -1
+    "pins": {
+      "a": 18,
+      "b": 19,
+      "c": 21,
+      "d": 20
+    }
   },
   "DB": {
     "description": "Door Buzzer",
     "simulated": true,
-    "pin": -1
+    "pins": {}
   },
   "DPIR1": {
     "description": "Door Motion Sensor",
     "simulated": true,
-    "pin": -1
+    "pins": {}
   },
   "DMS1": {
     "description": "Door Membrane Switch",
     "simulated": true,
-    "pins": [-1, -1, -1, -1, -1, -1, -1, -1]
+    "pins": {}
   }
 }
