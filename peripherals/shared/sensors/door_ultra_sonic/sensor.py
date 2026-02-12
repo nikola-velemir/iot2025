@@ -1,6 +1,6 @@
 from shared.logger.logger import log
-from shared.mqtt.mqtt_data_point import MqttDataPoint
-from shared.mqtt.mqtt_send import MqttBatchClient
+from shared.mqtt.influx.mqtt_telegraf_point import MqttTelegrafPoint
+from shared.mqtt.influx.mqtt_telegraf import MqttTelegrafBatchClient
 from shared.sensors.door_ultra_sonic.input import UltrasonicInput
 
 
@@ -10,7 +10,7 @@ class UltrasonicSensor:
         self._last_distance = None
         self.name = name
         self.device_name = device_name
-        self.mqtt_client: MqttBatchClient = mqtt_client
+        self.mqtt_client: MqttTelegrafBatchClient = mqtt_client
 
     def poll(self):
         distance = self.input_device.read_distance()
@@ -21,7 +21,7 @@ class UltrasonicSensor:
 
     def on_distance_change(self, distance: float):
         self.mqtt_client.send(
-            MqttDataPoint(
+            MqttTelegrafPoint(
                 "UltrasonicSensor",
                 self.device_name,
                 self.name,

@@ -7,7 +7,7 @@ from shared.actuators.door_light.actuator import DoorLightActuator
 from shared.actuators.door_light.output import SimulatedLightOutput
 from shared.config import load_config
 from shared.logger.logger import log, logger_loop
-from shared.mqtt.mqtt_send import MqttBatchClient
+from shared.mqtt.influx.mqtt_telegraf import MqttTelegrafBatchClient
 from shared.sensors.door_motion_sensor.component import run_motion_sensor
 from shared.sensors.door_sensor.component import run_door_sensor
 from shared.sensors.door_ultra_sonic.component import run_ultrasonic_sensor
@@ -18,7 +18,7 @@ if __name__ == '__main__':
     print(config)
     threads = []
     stop_event = threading.Event()
-    mqtt_client = MqttBatchClient()
+    mqtt_client = MqttTelegrafBatchClient()
 
     door_buzzer = DoorBuzzerActuator(SimulatedBuzzer(), "DBZ1", "PI1", mqtt_client)
     door_light = DoorLightActuator(SimulatedLightOutput(), "DL1", "PI1", mqtt_client)

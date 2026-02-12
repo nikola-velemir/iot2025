@@ -1,7 +1,7 @@
 from shared.actuators.subscriber import Subscriber
 from shared.logger.logger import log
-from shared.mqtt.mqtt_data_point import MqttDataPoint
-from shared.mqtt.mqtt_send import MqttBatchClient
+from shared.mqtt.influx.mqtt_telegraf_point import MqttTelegrafPoint
+from shared.mqtt.influx.mqtt_telegraf import MqttTelegrafBatchClient
 from shared.sensors.door_motion_sensor.event import MotionStateChanged
 from shared.sensors.door_motion_sensor.input import MotionInput
 
@@ -13,7 +13,7 @@ class DoorMotionSensor:
         self._subscribers = []
         self.name = name
         self.device_name = device_name
-        self.mqtt_client: MqttBatchClient = mqtt_client
+        self.mqtt_client: MqttTelegrafBatchClient = mqtt_client
 
     def subscribe(self, subscriber: Subscriber):
         self._subscribers.append(subscriber.callback)
@@ -29,7 +29,7 @@ class DoorMotionSensor:
         log("Motion detected!" if event.motion_detected else "No motion")
 
         self.mqtt_client.send(
-            MqttDataPoint(
+            MqttTelegrafPoint(
                 "MotionSensor",
                 self.device_name,
                 self.name,

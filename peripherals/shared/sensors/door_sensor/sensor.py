@@ -1,7 +1,7 @@
 from shared.actuators.subscriber import Subscriber
 from shared.logger.logger import log
-from shared.mqtt.mqtt_data_point import MqttDataPoint
-from shared.mqtt.mqtt_send import MqttBatchClient
+from shared.mqtt.influx.mqtt_telegraf_point import MqttTelegrafPoint
+from shared.mqtt.influx.mqtt_telegraf import MqttTelegrafBatchClient
 from shared.sensors.door_sensor.event import DoorStateChanged
 from shared.sensors.door_sensor.input import ButtonInput
 
@@ -13,7 +13,7 @@ class DoorSensor(object):
         self.name = name
         self.device_name = device_name
         self._subscribers = []
-        self.mqtt_client: MqttBatchClient = mqtt_client
+        self.mqtt_client: MqttTelegrafBatchClient = mqtt_client
 
     def subscribe(self, subscriber: Subscriber):
         self._subscribers.append(subscriber.callback)
@@ -32,7 +32,7 @@ class DoorSensor(object):
         log("Door is OPEN" if event.is_open else "Door is CLOSED")
 
         self.mqtt_client.send(
-            MqttDataPoint(
+            MqttTelegrafPoint(
                 "DoorSensor",
                 self.device_name,
                 self.name,
