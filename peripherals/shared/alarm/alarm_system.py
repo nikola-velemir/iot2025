@@ -13,14 +13,14 @@ class AlarmSystem(Subscriber):
         self.device_name = device_name
         self.mqtt_client = mqtt_client
 
-        self._timer = None  # Tajmer za "vrata otvorena predugo" (5s)
-        self._arm_timer = None  # Tajmer za aktivaciju sistema (10s)
+        self._timer = None
+        self._arm_timer = None
         self._lock = threading.Lock()
 
         self.current_input = ""
         self.correct_pin = "1234"
 
-        self.is_armed = False  # Sistem spreman da detektuje provalu
+        self.is_armed = False  #
         self.is_alarm_active = False  # Zujalica trenutno zvoni
         self.subscribers = []
         [self.subscribe(s) for s in subscribers]
@@ -43,7 +43,7 @@ class AlarmSystem(Subscriber):
                 self._on_correct_pin()
             else:
                 log("[SECURITY] Wrong PIN entered!")
-            self.current_input = ""  # Resetuj buffer u oba slučaja
+            self.current_input = ""
 
     def _on_correct_pin(self):
         if self.is_alarm_active or self.is_armed or self._arm_timer:
