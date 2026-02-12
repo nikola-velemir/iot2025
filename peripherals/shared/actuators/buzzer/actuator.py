@@ -1,5 +1,6 @@
 from shared.actuators.buzzer.output import BuzzerOutput
 from shared.actuators.subscriber import Subscriber
+from shared.alarm.event import AlarmActivated, AlarmDeactivated
 from shared.mqtt.influx.mqtt_telegraf_point import MqttTelegrafPoint
 from shared.mqtt.influx.mqtt_telegraf import MqttTelegrafBatchClient
 from shared.sensors.door_motion_sensor.event import MotionStateChanged
@@ -13,20 +14,20 @@ class DoorBuzzerActuator(Subscriber):
         self.telegraf_client: MqttTelegrafBatchClient = mqtt_client
 
     def callback(self, event):
-        if not isinstance(event, MotionStateChanged):
-            return
-
-        if event.motion_detected:
+        is_on = False
+        if isinstance(event, AlarmActivated):
             self.buzzer.on()
-        else:
+            is_on = True
+        if isinstance(event, AlarmDeactivated):
             self.buzzer.off()
+            is_on = False
 
         self.telegraf_client.send(
             MqttTelegrafPoint(
                 "BuzzerActuator",
                 self.device_name,
                 self.name,
-                event.motion_detected,
+                is_on,
                 self.buzzer.is_simulated()
             )
         )
