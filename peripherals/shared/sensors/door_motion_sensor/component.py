@@ -22,7 +22,7 @@ def run_motion_sensor(config, threads, stop_event, mqtt_client, sensor_name, dev
     for sub in subscribers:
         motion_sensor.subscribe(sub)
 
-    poll_interval = config.get('poll_interval', 1.0)
+    poll_interval = config.get('poll_interval', 15.0)
 
     poller_thread = threading.Thread(
         name="Motion-poller",

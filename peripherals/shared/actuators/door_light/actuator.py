@@ -1,7 +1,10 @@
+import threading
+
 from shared.actuators.subscriber import Subscriber
 from shared.logger.logger import log
 from shared.mqtt.influx.mqtt_telegraf_point import MqttTelegrafPoint
 from shared.mqtt.influx.mqtt_telegraf import MqttTelegrafBatchClient
+from shared.sensors.door_motion_sensor.event import MotionStateChanged
 from shared.sensors.door_sensor.event import DoorStateChanged
 from shared.actuators.door_light.output import LightOutput
 
@@ -13,17 +16,30 @@ class DoorLightActuator(Subscriber):
         self.name = name
         self.device_name = device_name
         self.mqtt_client: MqttTelegrafBatchClient = mqtt_client
+        self._timer = None  # Tajmer za automatsko gašenje
 
     def callback(self, event):
-        if not isinstance(event, DoorStateChanged):
+        if not isinstance(event, MotionStateChanged):
             return
 
-        if event.is_open:
+        if not event.motion_detected:
+            return
+
+        if self._timer:
+            self._timer.cancel()
+
+        self._switch_light(True)
+
+        # Pokreni tajmer koji će ugasiti svetlo nakon 10 sekundi
+        self._timer = threading.Timer(10.0, self._switch_light, [False])
+        self._timer.start()
+
+    def _switch_light(self, state: bool):
+        if state:
             self.light.turn_on()
         else:
             self.light.turn_off()
-        self.on_state_change(event.is_open)
-
+        self.on_state_change(state)
     def poll(self):
         """Optional: just report current state."""
         current_state = self.light.is_light()

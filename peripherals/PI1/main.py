@@ -7,6 +7,7 @@ from shared.actuators.door_light.actuator import DoorLightActuator
 from shared.actuators.door_light.output import SimulatedLightOutput
 from shared.config import load_config
 from shared.logger.logger import log, logger_loop
+from shared.mqtt.back.receive.mqtt_back_receiver import MqttReceiver
 from shared.mqtt.influx.mqtt_telegraf import MqttTelegrafBatchClient
 from shared.sensors.door_motion_sensor.component import run_motion_sensor
 from shared.sensors.door_sensor.component import run_door_sensor
@@ -22,12 +23,17 @@ if __name__ == '__main__':
 
     door_buzzer = DoorBuzzerActuator(SimulatedBuzzer(), "DBZ1", "PI1", mqtt_client)
     door_light = DoorLightActuator(SimulatedLightOutput(), "DL1", "PI1", mqtt_client)
+    dbr = MqttReceiver(door_buzzer.device_name, door_buzzer.name)
+    dlr = MqttReceiver(door_light.device_name, door_light.name)
+    dbr.start()
+    dlr.start()
+
 
     try:
-        run_door_sensor(config['DS1'], threads, stop_event, mqtt_client, "DS1", "PI1", [door_buzzer, door_light])
-        run_ultrasonic_sensor(config['DUS1'], threads, stop_event, mqtt_client, "DUS1", "PI1")
-        run_motion_sensor(config['DPIR1'], threads, stop_event, mqtt_client, "DPIR1", "PI1", [door_buzzer])
-        run_keypad(config['DMS1'], threads,stop_event, mqtt_client, "DMS1", "PI1")
+       # run_door_sensor(config['DS1'], threads, stop_event, mqtt_client, "DS1", "PI1", [door_buzzer])
+       # run_ultrasonic_sensor(config['DUS1'], threads, stop_event, mqtt_client, "DUS1", "PI1")
+        run_motion_sensor(config['DPIR1'], threads, stop_event, mqtt_client, "DPIR1", "PI1", [door_light])
+       # run_keypad(config['DMS1'], threads,stop_event, mqtt_client, "DMS1", "PI1")
 
         threading.Thread(
             target=logger_loop,
