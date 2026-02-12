@@ -6,7 +6,7 @@ import paho.mqtt.client as mqtt
 
 from shared.mqtt.back.send.mqtt_back_send_payload import MqttBackSendPayload
 
-BROKER = "localhost"
+BROKER = "192.168.1.2"
 PORT = 1883
 TOPIC = "test/topic"
 
@@ -85,8 +85,8 @@ if __name__ == "__main__":
     mqtt_service = MqttBackBatchClient(batch_size=10, flush_interval=5.0)
 
     try:
-        print("Sending 25 messages rapidly...")
-        for i in range(25):
+        print("Sending 100 messages rapidly...")
+        for i in range(100):
             mqtt_service.send(MqttBackSendPayload("PI1", "name1", 15))
             time.sleep(0.1)
 

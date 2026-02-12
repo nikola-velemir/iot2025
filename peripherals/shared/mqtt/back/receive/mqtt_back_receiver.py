@@ -3,7 +3,7 @@ import time
 import json
 
 # Configuration
-BROKER = "localhost"
+BROKER = "192.168.1.2"
 PORT = 1883
 BASE_TOPIC = "back_receive"
 
@@ -12,7 +12,8 @@ class MqttReceiver:
     def __init__(self, device_name, name):
         self.client = mqtt.Client(callback_api_version=mqtt.CallbackAPIVersion.VERSION2)
 
-        self.topic = f"{BASE_TOPIC}/{device_name}/{name}"
+        #self.topic = f"{BASE_TOPIC}/{device_name}/{name}"
+        self.topic = f"{BASE_TOPIC}"
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
         self.client.on_disconnect = self.on_disconnect
@@ -47,7 +48,7 @@ class MqttReceiver:
             print(f"Connecting to {BROKER}...")
             self.client.connect(BROKER, PORT, keepalive=60)
 
-            self.client.loop_start()
+            self.client.loop_forever()
 
         except KeyboardInterrupt:
             print("\nStopping client...")
