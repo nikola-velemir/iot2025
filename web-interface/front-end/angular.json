@@ -30,8 +30,15 @@
               }
             ],
             "styles": [
-              "src/styles.scss"
-            ]
+              "src/styles.scss",
+              "src/global-styles/colors.scss"
+            ],
+            "stylePreprocessorOptions": {
+              "includePaths": [
+                "src",
+                "src/global-styles"
+              ]
+            }
           },
           "configurations": {
             "production": {
