@@ -39,10 +39,14 @@ public class MqttConfig {
     @Bean
     public MessageChannel brgbProducerChannel() { return new DirectChannel(); }
 
-    @Bean(name = "bgrbConsumerChannel")
-    public MessageChannel brgbConsumerChannel() { return new DirectChannel(); }
+    // Channels for stopwatch
+    @Bean
+    public MessageChannel stopwatchProducerChannel() { return new DirectChannel(); }
 
-    // Consumers
+    @Bean(name = "stopwatchConsumerChannel")
+    public MessageChannel stopwatchConsumerChannel() { return new DirectChannel(); }
+
+    // Consumers (Only for alarm and stopwatch because BGRB can't be sent from the PI)
     @Bean
     public MessageProducer alarmConsumerAdapter(MqttPahoClientFactory factory) {
         MqttPahoMessageDrivenChannelAdapter adapter =
@@ -52,10 +56,10 @@ public class MqttConfig {
     }
 
     @Bean
-    public MessageProducer brgbConsumerAdapter(MqttPahoClientFactory factory) {
+    public MessageProducer stopwatchConsumerAdapter(MqttPahoClientFactory factory) {
         MqttPahoMessageDrivenChannelAdapter adapter =
-                new MqttPahoMessageDrivenChannelAdapter("brgb-sub", factory, "home/power/#");
-        adapter.setOutputChannel(brgbConsumerChannel());
+                new MqttPahoMessageDrivenChannelAdapter("brgb-sub", factory, "back_send/stopwatch");
+        adapter.setOutputChannel(stopwatchConsumerChannel());
         return adapter;
     }
 
@@ -70,5 +74,11 @@ public class MqttConfig {
     @ServiceActivator(inputChannel = "brgbProducerChannel")
     public MessageHandler brgbProducer(MqttPahoClientFactory factory) {
         return new MqttPahoMessageHandler("brgb-pub", factory);
+    }
+
+    @Bean(name = "stopwatchProducer")
+    @ServiceActivator(inputChannel = "stopwatchProducerChannel")
+    public MessageHandler stopwatchProducer(MqttPahoClientFactory factory) {
+        return new MqttPahoMessageHandler("stopwatch-pub", factory);
     }
 }

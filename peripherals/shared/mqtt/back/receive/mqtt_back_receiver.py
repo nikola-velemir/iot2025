@@ -58,5 +58,5 @@ class MqttReceiver:
 
 
 if __name__ == "__main__":
-    receiver = MqttReceiver("stopwatch")
+    receiver = MqttReceiver("brgb")
     receiver.start()

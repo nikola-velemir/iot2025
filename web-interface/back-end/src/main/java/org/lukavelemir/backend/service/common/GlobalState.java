@@ -4,7 +4,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Component
 public class GlobalState {
@@ -12,11 +11,15 @@ public class GlobalState {
     private final AtomicBoolean alarmArmed = new AtomicBoolean(false);
     private final AtomicBoolean alarmOn = new AtomicBoolean(false);
 
-    private final AtomicReference<String> lastStatus = new AtomicReference<>("INIT");
-
     public int getPersonCount() { return personCount.get(); }
-    public void incrementSensor() { personCount.incrementAndGet(); }
+    public void incrementPersonCount() { personCount.incrementAndGet(); }
+    public void decrementPersonCount() { personCount.decrementAndGet(); }
 
-    public String getLastStatus() { return lastStatus.get(); }
-    public void setLastStatus(String status) { lastStatus.set(status); }
+    public boolean isAlarmOn() { return alarmOn.get(); }
+    public void turnOffAlarm() { alarmOn.set(false); }
+    public void turnOnAlarm() { alarmOn.set(true); }
+
+    public boolean isAlarmArmed() { return alarmArmed.get(); }
+    public void armAlarm() { alarmArmed.set(true); }
+    public void disarmAlarm() { alarmArmed.set(false); }
 }
