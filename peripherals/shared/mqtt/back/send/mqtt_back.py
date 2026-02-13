@@ -6,7 +6,7 @@ import paho.mqtt.client as mqtt
 
 from shared.mqtt.back.send.mqtt_back_send_payload import MqttBackSendPayload
 
-BROKER = "192.168.1.2"
+BROKER = "localhost"
 PORT = 1883
 TOPIC = "test/topic"
 

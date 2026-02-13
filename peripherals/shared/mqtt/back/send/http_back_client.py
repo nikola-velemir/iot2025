@@ -1,6 +1,6 @@
 import requests
 
-API_ENDPOINT = "http://192.168.1.2:8080/api/people-changed"
+API_ENDPOINT = "http://localhost:8080/api/people-changed"
 
 
 class HttpBackClient:

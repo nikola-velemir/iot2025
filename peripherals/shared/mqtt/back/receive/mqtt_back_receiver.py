@@ -3,7 +3,7 @@ import time
 import json
 
 # Configuration
-BROKER = "192.168.1.2"
+BROKER = "localhost"
 PORT = 1883
 BASE_TOPIC = "back_receive"
 
