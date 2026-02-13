@@ -1,0 +1,26 @@
+.content {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 30px;
+  padding: 30px;
+}
+
+.table {
+  flex: 0 0 60%;
+  box-sizing: border-box;
+}
+
+.minimap {
+  width: 600px;
+  height: auto;
+  display: block;
+
+  border: 3px solid #000;
+  border-radius: 8px;
+
+  background: #fff;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+}

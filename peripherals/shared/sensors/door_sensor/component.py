@@ -6,7 +6,7 @@ from shared.sensors.door_sensor.input import SimulatedButton, GpioButton
 from shared.sensors.door_sensor.sensor import DoorSensor
 from shared.sensors.door_sensor.simulator import run_door_sensor_simulator
 
-def run_door_sensor_polling(sensor: DoorSensor, stop_event, interval=0.1):
+def run_door_sensor_polling(sensor: DoorSensor, stop_event, interval=1.0):
     while not stop_event.is_set():
         sensor.poll()
         time.sleep(interval)

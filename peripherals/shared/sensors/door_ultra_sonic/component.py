@@ -10,12 +10,13 @@ def run_ultrasonic_sensor_polling(sensor: UltrasonicSensor, stop_event, interval
         stop_event.wait(interval)
 
 def run_ultrasonic_sensor(config, threads, stop_event, mqtt_client, sensor_name, device_name):
+    ultrasonic_sensor = UltrasonicSensor(SimulatedUltrasonicInput(), sensor_name, device_name, mqtt_client)
+
     if not config['simulated']:
         log("Starting DUS1 sensor")
         ultrasonic_sensor = UltrasonicSensor(GpioUltrasonicInput(config['pin']), sensor_name, device_name, mqtt_client)
     else:
         log("Starting DUS1 simulator")
-        ultrasonic_sensor = UltrasonicSensor(SimulatedUltrasonicInput(), sensor_name, device_name, mqtt_client)
 
     interval = config.get('poll_interval', 0.5)
 
@@ -30,3 +31,4 @@ def run_ultrasonic_sensor(config, threads, stop_event, mqtt_client, sensor_name,
     threads.append(poller_thread)
 
     log("US1 started")
+    return ultrasonic_sensor

@@ -13,6 +13,7 @@ services:
       - DOCKER_INFLUXDB_INIT_ORG=iot
       - DOCKER_INFLUXDB_INIT_BUCKET=iotBucket
       - DOCKET_INFLUXDB_INIT_RETENTION=0
+      - INFLUXD_LOG_LEVEL=error
 
   grafana:
     image: grafana/grafana-enterprise:latest
@@ -26,6 +27,12 @@ services:
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=admin123456
       - GF_SECURITY_ADMIN_USER=admin
+      - GF_LOG_LEVEL=critical
+      - GF_LOG_MODE=console
+      - GF_SECURITY_ALLOW_EMBEDDING=true
+      - GF_AUTH_ANONYMOUS_ENABLED=true
+      - GF_AUTH_ANONYMOUS_ORG_ROLE=Viewer
+      - GF_AUTH_DISABLE_LOGIN_FORM=true
 
   mosquitto:
     image: eclipse-mosquitto:latest

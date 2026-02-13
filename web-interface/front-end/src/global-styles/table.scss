@@ -1,0 +1,13 @@
+@use "colors.scss";
+
+mat-header-cell {
+  font-size: large;
+  color: colors.$white;
+  border-bottom: 1px solid colors.$edge;
+}
+
+mat-cell {
+  font-size: small;
+  color: colors.$white2;
+  border-bottom: 1px solid colors.$edge;
+}

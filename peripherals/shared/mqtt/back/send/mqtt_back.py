@@ -4,14 +4,18 @@ import threading
 from queue import Queue, Empty
 import paho.mqtt.client as mqtt
 
-from shared.mqtt.mqtt_data_point import MqttDataPoint
+from shared.mqtt.back.send.alarm.mqtt_back_alarm_arm_payload import MqttBackAlarmArmPayload
+from shared.mqtt.back.send.alarm.mqtt_back_alarm_door_person_event_payload import MqttBackAlarmDoorPersonEventPayload
+from shared.mqtt.back.send.alarm.mqtt_back_alarm_gyro_payload import MqttBackAlarmGyroPayload
+from shared.mqtt.back.send.alarm.mqtt_back_alarm_motion_payload import MqttBackAlarmMotionPayload
+from shared.mqtt.back.send.mqtt_back_send_payload import MqttBackSendPayload
 
 BROKER = "localhost"
 PORT = 1883
 TOPIC = "test/topic"
 
 
-class MqttBatchClient:
+class MqttBackBatchClient:
     def __init__(self, batch_size=10, flush_interval=5.0):
         self.batch_size = batch_size
         self.flush_interval = flush_interval
@@ -34,7 +38,7 @@ class MqttBatchClient:
         else:
             print(f"Connection failed: {rc}")
 
-    def send(self, payload: MqttDataPoint):
+    def send(self, payload: MqttBackSendPayload):
         self.queue.put(payload)
 
     def _batch_worker(self):
@@ -56,19 +60,12 @@ class MqttBatchClient:
 
     def _flush(self, batch):
         for data_point in batch:
-            dynamic_topic = f"sensors_actuators/{data_point.type_name}"
+            dynamic_topic = data_point.topic
 
-            payload = json.dumps({
-                "name": data_point.name,
-                "device_name": data_point.device_name,
-                "value": data_point.value,
-                "is_simulated": data_point.is_simulated,
-                "time": data_point.time
-            })
-
+            payload = json.dumps(data_point.get_payload_as_dict())
             self.client.publish(dynamic_topic, payload=payload, qos=1)
 
-        print(f"Flushed {len(batch)} points to their respective topics.")
+        print(f"Flushed {len(batch)} points to their respective topics (back end).")
 
     def stop(self):
         self.running = False
@@ -84,13 +81,17 @@ class MqttBatchClient:
 
 
 if __name__ == "__main__":
-    mqtt_service = MqttBatchClient(batch_size=10, flush_interval=5.0)
+    mqtt_service = MqttBackBatchClient(batch_size=10, flush_interval=5.0)
 
     try:
-        print("Sending 25 messages rapidly...")
-        for i in range(25):
-            mqtt_service.send(MqttDataPoint("PI1", "name1", 15, 0.4,True))
-            time.sleep(0.1)
+        print("Sending 100 messages rapidly...")
+        for i in range(100):
+            mqtt_service.send(MqttBackAlarmArmPayload("1234"))
+            mqtt_service.send(MqttBackAlarmDoorPersonEventPayload("left"))
+            mqtt_service.send(MqttBackAlarmMotionPayload(123))
+            mqtt_service.send(MqttBackAlarmMotionPayload("yes"))
+            mqtt_service.send(MqttBackAlarmGyroPayload("yes"))
+            time.sleep(0.5)
 
         print("Waiting for final time-based flush...")
         time.sleep(10)

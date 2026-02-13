@@ -1,6 +1,6 @@
-from shared.actuators.subscriber import Subscriber
-from shared.mqtt.mqtt_data_point import MqttDataPoint
-from shared.mqtt.mqtt_send import MqttBatchClient
+from shared.mqtt.influx.mqtt_telegraf_point import MqttTelegrafPoint
+from shared.mqtt.influx.mqtt_telegraf import MqttTelegrafBatchClient
+from shared.pubsub.subscriber import Subscriber
 from shared.sensors.keypad.input import KeypadInput
 from shared.logger.logger import log
 
@@ -11,7 +11,7 @@ class KeyPad:
         self._subscribers = []
         self.name = name
         self.device_name = device_name
-        self.mqtt_client: MqttBatchClient = mqtt_client
+        self.mqtt_client: MqttTelegrafBatchClient = mqtt_client
 
     def subscribe(self, subscriber: Subscriber):
         self._subscribers.append(subscriber.callback)
@@ -23,7 +23,7 @@ class KeyPad:
 
     def on_key_pressed(self, key: str):
         self.mqtt_client.send(
-            MqttDataPoint(
+            MqttTelegrafPoint(
                 "KeypadSensor",
                 self.device_name,
                 self.name,

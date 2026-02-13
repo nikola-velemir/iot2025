@@ -1,0 +1,22 @@
+<div class="topbar">
+  <a routerLinkActive="active-link"
+     [routerLink]="'/home'">
+    <span class="logo-text">Smart home</span>
+  </a>
+
+  <div class="nav-left">
+    <div class="items">
+      @for (item of topbarItems; track item.label) {
+        <a routerLinkActive="active-link"
+           [routerLink]="item.link">
+          <span class="nav-color-box" [ngStyle]="{'background-color': item.color}"></span>
+          <span class="material-symbols-rounded">{{ item.icon }}</span> {{ item.label }}
+        </a>
+      }
+    </div>
+  </div>
+
+  <div class="nav-right">
+    <button (click)="turnOffAlarm()" [disabled]="!alarmState" class="alarm-btn">Alarm state: {{ alarmState ? 'ON' : 'OFF' }}</button>
+  </div>
+</div>
