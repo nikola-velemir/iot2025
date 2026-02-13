@@ -4,14 +4,14 @@ import threading
 from queue import Queue, Empty
 import paho.mqtt.client as mqtt
 
-from shared.mqtt.mqtt_data_point import MqttDataPoint
+from shared.mqtt.back.send.mqtt_back_send_payload import MqttBackSendPayload
 
-BROKER = "localhost"
+BROKER = "192.168.1.2"
 PORT = 1883
 TOPIC = "test/topic"
 
 
-class MqttBatchClient:
+class MqttBackBatchClient:
     def __init__(self, batch_size=10, flush_interval=5.0):
         self.batch_size = batch_size
         self.flush_interval = flush_interval
@@ -34,7 +34,7 @@ class MqttBatchClient:
         else:
             print(f"Connection failed: {rc}")
 
-    def send(self, payload: MqttDataPoint):
+    def send(self, payload: MqttBackSendPayload):
         self.queue.put(payload)
 
     def _batch_worker(self):
@@ -56,13 +56,11 @@ class MqttBatchClient:
 
     def _flush(self, batch):
         for data_point in batch:
-            dynamic_topic = f"sensors_actuators/{data_point.type_name}"
+            dynamic_topic = f"back_send/alarm"
 
             payload = json.dumps({
                 "name": data_point.name,
-                "device_name": data_point.device_name,
                 "value": data_point.value,
-                "is_simulated": data_point.is_simulated,
                 "time": data_point.time
             })
 
@@ -84,12 +82,12 @@ class MqttBatchClient:
 
 
 if __name__ == "__main__":
-    mqtt_service = MqttBatchClient(batch_size=10, flush_interval=5.0)
+    mqtt_service = MqttBackBatchClient(batch_size=10, flush_interval=5.0)
 
     try:
-        print("Sending 25 messages rapidly...")
-        for i in range(25):
-            mqtt_service.send(MqttDataPoint("PI1", "name1", 15, 0.4,True))
+        print("Sending 100 messages rapidly...")
+        for i in range(100):
+            mqtt_service.send(MqttBackSendPayload("PI1", "name1", 15))
             time.sleep(0.1)
 
         print("Waiting for final time-based flush...")

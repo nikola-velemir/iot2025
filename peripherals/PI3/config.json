@@ -1,3 +1,48 @@
-{
 
+{
+  "DHT1": {
+    "description": "DHT",
+    "simulated": true,
+    "pins": {
+      "a": 15,
+      "b": 14,
+      "c": 13,
+      "d": 12
+    }
+  },
+  "DHT2": {
+    "description": "DHT",
+    "simulated": true,
+    "pins": {
+      "a": 22,
+      "b": 34,
+      "c": 11,
+      "d": 0
+    }
+  },
+  "IR": {
+    "description": "Infra Red",
+    "simulated": true,
+    "pins": {
+      "a": 18,
+      "b": 19,
+      "c": 21,
+      "d": 20
+    }
+  },
+  "BRGB": {
+    "description": "MARAM GHARARARAM",
+    "simulated": true,
+    "pins": {}
+  },
+  "DPIR3": {
+    "description": "Door Motion Sensor",
+    "simulated": true,
+    "pins": {}
+  },
+  "LCD": {
+    "description": "LCD",
+    "simulated": true,
+    "pins": {}
+  }
 }
