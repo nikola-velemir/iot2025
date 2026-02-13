@@ -1,9 +1,9 @@
 import threading
 
-from shared.subscriber.subscriber import Subscriber
 from shared.logger.logger import log
 from shared.mqtt.influx.mqtt_telegraf_point import MqttTelegrafPoint
 from shared.mqtt.influx.mqtt_telegraf import MqttTelegrafBatchClient
+from shared.pubsub.subscriber import Subscriber
 from shared.sensors.door_motion_sensor.event import MotionStateChanged
 from shared.actuators.door_light.output import LightOutput
 

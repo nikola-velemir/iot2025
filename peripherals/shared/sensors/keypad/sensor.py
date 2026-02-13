@@ -1,6 +1,6 @@
-from shared.subscriber.subscriber import Subscriber
 from shared.mqtt.influx.mqtt_telegraf_point import MqttTelegrafPoint
 from shared.mqtt.influx.mqtt_telegraf import MqttTelegrafBatchClient
+from shared.pubsub.subscriber import Subscriber
 from shared.sensors.keypad.input import KeypadInput
 from shared.logger.logger import log
 
