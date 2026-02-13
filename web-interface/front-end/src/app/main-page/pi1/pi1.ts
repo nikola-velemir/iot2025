@@ -33,7 +33,7 @@ export class Pi1 {
       },
       {
         name: 'DMS', type: 'Keypad', peripheralType: 'Sensor',
-        currentState: "TEST_STATE", grafanaUrl: ""
+        currentState: "TEST_STATE", grafanaUrl: "http://localhost:3000/d-solo/ddaacbac-473a-4982-a690-9c22cd365de1/pi1?orgId=1&from=1771017037158&to=1771017337158&timezone=browser&refresh=10s&panelId=panel-6&__feature.dashboardSceneSolo=true"
       },
       {
         name: 'DB', type: 'Buzzer', peripheralType: 'Actuator',
