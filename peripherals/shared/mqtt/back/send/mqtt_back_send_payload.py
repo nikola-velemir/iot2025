@@ -1,9 +1,11 @@
-import time
+from abc import ABC, abstractmethod
 
 
-class MqttBackSendPayload:
-    def __init__(self, type_name, name, value):
-        self.type_name = type_name
-        self.name = name
-        self.value = value
-        self.time = time.time_ns()
+class MqttBackSendPayload(ABC):
+    def __init__(self, topic, type):
+        self.topic = topic
+        self.type = type
+
+    @abstractmethod
+    def get_payload_as_dict(self):
+        pass

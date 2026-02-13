@@ -8,7 +8,6 @@ from shared.actuators.door_light.actuator import DoorLightActuator
 from shared.actuators.door_light.output import SimulatedLightOutput
 from shared.config import load_config
 from shared.logger.logger import log, logger_loop
-from shared.mqtt.back.receive.mqtt_back_receiver import MqttReceiver
 from shared.mqtt.influx.mqtt_telegraf import MqttTelegrafBatchClient
 from shared.sensors.door_sensor.component import run_door_sensor
 from shared.sensors.keypad.component import run_keypad
@@ -18,22 +17,24 @@ if __name__ == '__main__':
     print(config)
     threads = []
     stop_event = threading.Event()
-    mqtt_client = MqttTelegrafBatchClient()
 
-    door_buzzer = DoorBuzzerActuator(SimulatedBuzzer(), "DBZ1", "PI1", mqtt_client)
-    door_light = DoorLightActuator(SimulatedLightOutput(), "DL1", "PI1", mqtt_client)
+    mqtt_telgraf_client = MqttTelegrafBatchClient()
 
-    dbr = MqttReceiver(door_buzzer.device_name, door_buzzer.name)
-    dlr = MqttReceiver(door_light.device_name, door_light.name)
-    dbr.start()
-    dlr.start()
+    door_buzzer = DoorBuzzerActuator(SimulatedBuzzer(), "DBZ1", "PI1", mqtt_telgraf_client)
+    door_light = DoorLightActuator(SimulatedLightOutput(), "DL1", "PI1", mqtt_telgraf_client)
 
-    alarm = AlarmSystem( "DoorAlarm", "PI1", mqtt_client, subscribers = [door_buzzer])
+    alarm = AlarmSystem( "DoorAlarm", "PI1", mqtt_telgraf_client, subscribers = [door_buzzer])
+    # todo namestiti da je alarm system zapravo hendler poruka sa beka, a ne i da se brine o logici senzora, to
+    # todo prebaciti u same senzor funkcije poput run_door_sensor
+
+    # todo brgb system kao kozumer od beka za bgrb
+    # todo stopwatch system kao konzumer od beka za stopericu
     try:
-        run_door_sensor(config['DS1'], threads, stop_event, mqtt_client, "DS1", "PI1", [alarm])
+        run_door_sensor(config['DS1'], threads, stop_event, mqtt_telgraf_client, "DS1", "PI1", [alarm])
         # dus = run_ultrasonic_sensor(config['DUS1'], threads, stop_event, mqtt_client, "DUS1", "PI1")
         # run_motion_sensor(config['DPIR1'], threads, stop_event, mqtt_client, "DPIR1", "PI1", [dus])
-        run_keypad(config['DMS1'], threads,stop_event, mqtt_client, "DMS1", "PI1", subscribers=[alarm])
+        run_keypad(config['DMS1'], threads, stop_event, mqtt_telgraf_client, "DMS1", "PI1", subscribers=[alarm])
+        # todo refaktorisati da je keypad nezavisan od alarm objekta na paju
 
         threading.Thread(
             target=logger_loop,

@@ -9,11 +9,11 @@ BASE_TOPIC = "back_receive"
 
 
 class MqttReceiver:
-    def __init__(self, device_name, name):
+    def __init__(self, type):
         self.client = mqtt.Client(callback_api_version=mqtt.CallbackAPIVersion.VERSION2)
 
-        #self.topic = f"{BASE_TOPIC}/{device_name}/{name}"
-        self.topic = f"{BASE_TOPIC}"
+        self.topic = f"{BASE_TOPIC}/{type}"
+        #self.topic = f"{BASE_TOPIC}"
         self.client.on_connect = self.on_connect
         self.client.on_message = self.on_message
         self.client.on_disconnect = self.on_disconnect
@@ -58,5 +58,5 @@ class MqttReceiver:
 
 
 if __name__ == "__main__":
-    receiver = MqttReceiver("test","test")
+    receiver = MqttReceiver("stopwatch")
     receiver.start()
