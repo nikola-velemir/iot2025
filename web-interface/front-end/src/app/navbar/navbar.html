@@ -17,6 +17,6 @@
   </div>
 
   <div class="nav-right">
-    <button [disabled]="!alarmState" class="alarm-btn">Alarm state: {{ alarmState ? 'ON' : 'OFF' }}</button>
+    <button (click)="turnOffAlarm()" [disabled]="!alarmState" class="alarm-btn">Alarm state: {{ alarmState ? 'ON' : 'OFF' }}</button>
   </div>
 </div>

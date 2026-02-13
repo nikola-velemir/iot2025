@@ -1,0 +1,31 @@
+<div class="container">
+  <button (click)="onNoClick()" class="close-button" mat-icon-button tabindex="-1">
+    <span class="material-symbols-rounded">close</span>
+  </button>
+
+  <div class="info">
+    <div class="color-picker-container">
+      <label>Choose Display Color</label>
+      <div class="picker-row">
+        <div
+          class="color-preview"
+          [style.background-color]="selectedColor"
+          (click)="colorInput.click()">
+        </div>
+
+        <input
+          #colorInput
+          type="color"
+          [(ngModel)]="selectedColor"
+          style="display: none;">
+
+        <span class="color-code">{{ selectedColor }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="buttons">
+    <button (click)="onYesClick()" class="gray-button finish">Set</button>
+    <button (click)="onNoClick()" class="white-danger-button finish">Cancel</button>
+  </div>
+</div>

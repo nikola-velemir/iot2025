@@ -1,0 +1,12 @@
+<div class="container">
+  <button (click)="onNoClick()" class="close-button" mat-icon-button tabindex="-1">
+    <span class="material-symbols-rounded">close</span>
+  </button>
+
+  <div class="iframe-container">
+    <iframe
+      [src]="url"
+      [width]="600"
+      [height]="600"></iframe>
+  </div>
+</div>

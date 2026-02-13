@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, inject, Input, OnInit, ViewChild} from '@angular/core';
 import {
   MatCell, MatCellDef,
   MatColumnDef,
@@ -9,13 +9,21 @@ import {
   MatRowDef, MatTable, MatTableDataSource
 } from '@angular/material/table';
 import {MatSort, MatSortModule} from '@angular/material/sort';
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {StopwatchDialog} from '../dialog/stopwatch-dialog/stopwatch-dialog';
+import {firstValueFrom} from 'rxjs';
+import {GraphDialog} from '../dialog/graph-dialog/graph-dialog';
 
 export interface TableRow {
   name: string;
   type: string;
   peripheralType: PeripheralType;
-  col3: string;
-  col4: string;
+  action?: {
+    name: string,
+    callback: () => void;
+  };
+  currentState: string;
+  grafanaUrl: string;
 }
 
 export type PeripheralType = "Sensor" | "Actuator";
@@ -42,15 +50,29 @@ export class PeripheralTable implements AfterViewInit, OnInit {
   @Input() dataSourceInput: TableRow[] = [];
   @ViewChild(MatSort) sort!: MatSort;
 
+  dialog = inject(MatDialog);
   dataSource = new MatTableDataSource();
+  anyAction: boolean = false;
+  displayedColumns: string[] = [];
 
   ngOnInit() {
     this.dataSource.data = this.dataSourceInput;
+    this.anyAction = this.dataSourceInput.some(t => t.action !== undefined);
+
+    if (this.anyAction) {
+      this.displayedColumns = ['name', 'type', 'graph', 'actuator-actions', 'current-state'];
+    } else {
+      this.displayedColumns = ['name', 'type', 'graph', 'current-state'];
+    }
   }
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
   }
 
-  displayedColumns: string[] = ['name', 'type', 'graph', 'actuator-actions'];
+  async openGrafanaGraph(url: string) {
+    const dialogRef: MatDialogRef<GraphDialog, null | undefined> = this.dialog.open(GraphDialog, {
+      height: '600px',
+    });
+  }
 }

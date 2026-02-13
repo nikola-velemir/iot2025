@@ -1,15 +1,6 @@
 <div class="content">
   <img src="/minimap_pi2.png" class="minimap" alt="">
   <app-peripheral-table
-    [dataSourceInput]="
-    [
-      { name: 'DUS2', type: 'Ultrasonic sensor', peripheralType: 'Sensor', col3: 'C1', col4: 'D1' },
-      { name: 'DPIR2', type: 'Motion sensor', peripheralType: 'Sensor', col3: 'C2', col4: 'D2' },
-      { name: 'DS2', type: 'Door sensor', peripheralType: 'Sensor', col3: 'C3', col4: 'D3' },
-      { name: '4SD', type: '4 segment display', peripheralType: 'Actuator', col3: 'C4', col4: 'D4' },
-      { name: 'BTN', type: 'Button', peripheralType: 'Sensor', col3: 'C4', col4: 'D4' },
-      { name: 'DHT3', type: 'Temperature sensor', peripheralType: 'Sensor', col3: 'C4', col4: 'D4' },
-      { name: 'GYR', type: 'Gyroscope', peripheralType: 'Sensor', col3: 'C4', col4: 'D4' },
-    ]"
+    [dataSourceInput]="peripherals"
     class="table" />
 </div>

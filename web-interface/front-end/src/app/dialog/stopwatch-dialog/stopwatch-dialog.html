@@ -1,0 +1,45 @@
+<div class="container">
+  <button (click)="onNoClick()" class="close-button" mat-icon-button tabindex="-1">
+    <span class="material-symbols-rounded">close</span>
+  </button>
+
+  <div class="info">
+    <div class="input-group">
+      <mat-form-field appearance="outline">
+        <mat-label>Starting Duration (min)</mat-label>
+        <input
+          matInput
+          inputmode="numeric"
+          pattern="[0-9]*"
+          [(ngModel)]="startingDuration"
+          appCappedNumber
+          [capMin]="1"
+          [capMax]="1380"
+          [min]="1"
+          [max]="1380"
+          placeholder="1"
+        >
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Increase Duration (seconds)</mat-label>
+        <input
+          matInput
+          inputmode="numeric"
+          pattern="[0-9]*"
+          [(ngModel)]="increaseDuration"
+          appCappedNumber
+          [capMin]="1"
+          [capMax]="900"
+          [min]="1"
+          [max]="900"
+          placeholder="1">
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="buttons">
+    <button (click)="onYesClick()" class="gray-button finish">Start</button>
+    <button (click)="onNoClick()" class="white-danger-button finish">Cancel</button>
+  </div>
+</div>
