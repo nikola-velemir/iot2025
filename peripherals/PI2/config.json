@@ -9,8 +9,8 @@
       "d": 12
     }
   },
-  "DL": {
-    "description": "Door Light (LED diode)",
+  "GSG": {
+    "description": "Gyroscope",
     "simulated": true,
     "pins": {
       "a": 22,
@@ -19,7 +19,7 @@
       "d": 0
     }
   },
-  "DUS1": {
+  "DUS2": {
     "description": "Door Ultrasonic Sensor",
     "simulated": true,
     "pins": {
@@ -29,17 +29,17 @@
       "d": 20
     }
   },
-  "DB": {
+  "DS2": {
     "description": "Door Buzzer",
     "simulated": true,
     "pins": {}
   },
-  "DPIR1": {
+  "DPIR2": {
     "description": "Door Motion Sensor",
     "simulated": true,
     "pins": {}
   },
-  "DMS1": {
+  "BTN": {
     "description": "Door Membrane Switch",
     "simulated": true,
     "pins": {}

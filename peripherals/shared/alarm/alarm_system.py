@@ -1,6 +1,6 @@
 import threading
 
-from shared.actuators.subscriber import Subscriber
+from shared.subscriber.subscriber import Subscriber
 from shared.alarm.event import AlarmActivated, AlarmDeactivated
 from shared.logger.logger import log
 from shared.sensors.door_sensor.event import DoorStateChanged

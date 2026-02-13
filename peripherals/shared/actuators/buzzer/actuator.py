@@ -1,9 +1,8 @@
 from shared.actuators.buzzer.output import BuzzerOutput
-from shared.actuators.subscriber import Subscriber
+from shared.subscriber.subscriber import Subscriber
 from shared.alarm.event import AlarmActivated, AlarmDeactivated
 from shared.mqtt.influx.mqtt_telegraf_point import MqttTelegrafPoint
 from shared.mqtt.influx.mqtt_telegraf import MqttTelegrafBatchClient
-from shared.sensors.door_motion_sensor.event import MotionStateChanged
 
 
 class DoorBuzzerActuator(Subscriber):

@@ -6,12 +6,13 @@ from shared.sensors.door_sensor.event import DoorStateChanged
 from shared.sensors.door_sensor.input import ButtonInput
 
 
-class DoorSensor(Publisher):
-    def __init__(self, button: ButtonInput, name, device_name, mqtt_client):
+class Button(Publisher):
+    def __init__(self, button: ButtonInput, full_name, name, device_name, mqtt_client):
         super().__init__()
         self.button = button
         self._last_state = None
         self.name = name
+        self.full_name = full_name
         self.device_name = device_name
         self.mqtt_client: MqttTelegrafBatchClient = mqtt_client
 
@@ -26,11 +27,11 @@ class DoorSensor(Publisher):
             self.on_state_change(event)
 
     def on_state_change(self, event: DoorStateChanged):
-        log("Door is OPEN" if event.is_open else "Door is CLOSED")
+        log(f"{self.full_name} is pressed")
 
         self.mqtt_client.send(
             MqttTelegrafPoint(
-                "DoorSensor",
+                self.full_name,
                 self.device_name,
                 self.name,
                 event.is_open,

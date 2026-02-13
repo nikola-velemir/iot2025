@@ -19,8 +19,7 @@ def run_motion_sensor(config, threads, stop_event, mqtt_client, sensor_name, dev
         log("Starting DPIR1 simulator")
         motion_sensor = DoorMotionSensor(SimulatedMotionInput(), sensor_name, device_name, mqtt_client)
 
-    for sub in subscribers:
-        motion_sensor.subscribe(sub)
+    motion_sensor.subscribe_multiple(subscribers)
 
     poll_interval = config.get('poll_interval', 15.0)
 
