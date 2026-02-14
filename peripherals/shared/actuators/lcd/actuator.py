@@ -2,18 +2,20 @@ import threading
 import time
 
 from shared.actuators.lcd.output import LcdOutput
+from shared.mqtt.influx.mqtt_telegraf_point import MqttTelegrafPoint
 from shared.pubsub.subscriber import Subscriber
 
 
 class LcdActuator(Subscriber):
-    def __init__(self, lcd: LcdOutput, name, device_name):
+    def __init__(self, lcd: LcdOutput, name, device_name, mqtt_client, is_simulated = True):
         self.lcd = lcd
         self.name = name
         self.device_name = device_name
 
+        self.telegraf_client = mqtt_client
         self.sensor_data = {}
         self._lock = threading.Lock()
-
+        self.is_simulated = is_simulated
         self.display_thread = threading.Thread(target=self._rotation_loop, daemon=True)
         self.display_thread.start()
 
@@ -42,6 +44,15 @@ class LcdActuator(Subscriber):
                     line2 = f"T:{data['temp']}C H:{data['hum']}%"
                     self.lcd.display_text(line1, line2)
 
+                    self.telegraf_client.send(
+                        MqttTelegrafPoint(
+                            "BRGB",  # promeni na tip
+                            self.device_name,
+                            self.name,
+                            line2,
+                            self.is_simulated
+                        )
+                    )
                 time.sleep(5)
 
     def on_state_change(self, message: str):

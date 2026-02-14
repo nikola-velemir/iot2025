@@ -18,7 +18,7 @@ if __name__ == "__main__":
     stop_event = threading.Event()
     telegraf_client = MqttTelegrafBatchClient()
 
-    brgb = BRGB(config["BRGB"], telegraf_client)
+    brgb = BRGB(config["BRGB"],'PI2', telegraf_client)
     #lcd = LcdActuator(SimulatedLcd(), config["LCD"], "PI3")
 
 
