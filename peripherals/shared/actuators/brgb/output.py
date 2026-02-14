@@ -1,9 +1,5 @@
 from abc import ABC, abstractmethod
 from shared.logger.logger import log
-from shared.mqtt.back.receive.mqtt_back_receiver import MqttReceiver
-from shared.mqtt.influx.mqtt_telegraf_point import MqttTelegrafPoint
-from shared.pubsub.subscriber import Subscriber
-
 
 # Output abstraction
 class BRGBOutput(ABC):
@@ -52,7 +48,6 @@ class GpioBRGBOutput(BRGBOutput):
         self.green_pin = green_pin
         self.blue_pin = blue_pin
         self.current_color = "OFF"
-
 
     def is_simulated(self) -> bool:
         return False

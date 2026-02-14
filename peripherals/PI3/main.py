@@ -20,6 +20,7 @@ if __name__ == "__main__":
 
     brgb = initialize_brgb(config["BRGB"],"BRGB", DEVICE_NAME, telegraf_client)
     lcd = initialize_lcd(config["LCD"],"LCD", DEVICE_NAME, telegraf_client)
+
     try:
         run_dht_sensor(config["DHT2"], threads,stop_event, telegraf_client,"DHT2",DEVICE_NAME, subscribers=[lcd])
         run_dht_sensor(config["DHT1"], threads,stop_event, telegraf_client,"DHT1",DEVICE_NAME, subscribers=[lcd])

@@ -1,4 +1,4 @@
-import {computed, Injectable, signal} from '@angular/core';
+import {Injectable, signal} from '@angular/core';
 import {EMPTY_REAL_TIME_DATA, RealTimeData} from '../models/GlobalState';
 
 @Injectable({
@@ -11,9 +11,5 @@ export class GlobalStateService {
 
   setGlobalState(newState: RealTimeData) {
     this.state.set(newState);
-  }
-
-  getSensorValue(pi: 'pi1' | 'pi2' | 'pi3', sensor: string) {
-    return computed(() => (this.state() as any)[pi][sensor]);
   }
 }

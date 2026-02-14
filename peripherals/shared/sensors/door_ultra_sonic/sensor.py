@@ -4,8 +4,8 @@ from collections import deque
 from shared.logger.logger import log
 from shared.mqtt.back.send.alarm.mqtt_back_alarm_door_person_event_payload import MqttBackAlarmDoorPersonEventPayload
 from shared.mqtt.back.send.mqtt_back import MqttBackBatchClient
-from shared.mqtt.influx.mqtt_telegraf_point import MqttTelegrafPoint
 from shared.mqtt.influx.mqtt_telegraf import MqttTelegrafBatchClient
+from shared.mqtt.influx.mqtt_telegraf_single_field_point import MqttTelegrafSingleFieldPoint
 from shared.pubsub.subscriber import Subscriber
 from shared.sensors.door_motion_sensor.event import MotionStateChanged
 from shared.sensors.door_ultra_sonic.input import UltrasonicInput
@@ -63,7 +63,7 @@ class UltrasonicSensor(Subscriber):
         return "Stationary/Unknown"
     def on_distance_change(self, distance: float):
         self.mqtt_client.send(
-            MqttTelegrafPoint(
+            MqttTelegrafSingleFieldPoint(
                 "UltrasonicSensor",
                 self.device_name,
                 self.name,

@@ -2,7 +2,7 @@ import threading
 import time
 
 from shared.actuators.lcd.output import LcdOutput
-from shared.mqtt.influx.mqtt_telegraf_point import MqttTelegrafPoint
+from shared.mqtt.influx.mqtt_telegraf_single_field_point import MqttTelegrafSingleFieldPoint
 from shared.pubsub.subscriber import Subscriber
 
 
@@ -44,8 +44,8 @@ class LcdActuator(Subscriber):
                     self.output.display_text(line1, line2)
 
                     self.telegraf_client.send(
-                        MqttTelegrafPoint(
-                            "LCD",  # promeni na tip
+                        MqttTelegrafSingleFieldPoint(
+                            "LCD",
                             self.device_name,
                             self.name,
                             line1 + " " + line2,

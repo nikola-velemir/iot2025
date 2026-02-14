@@ -1,8 +1,6 @@
-from paho.mqtt.subscribe import callback
-
 from shared.logger.logger import log
 from shared.mqtt.back.receive.mqtt_back_receiver import MqttReceiver
-from shared.mqtt.influx.mqtt_telegraf_point import MqttTelegrafPoint
+from shared.mqtt.influx.mqtt_telegraf_single_field_point import MqttTelegrafSingleFieldPoint
 from shared.pubsub.subscriber import Subscriber
 
 
@@ -41,11 +39,11 @@ class BRGB(Subscriber):
         self.current_color = "WHITE"
         log(f"{self.name} turned ON")
         self.telegraf_client.send(
-            MqttTelegrafPoint(
+            MqttTelegrafSingleFieldPoint(
                 "BRGB",
                 self.device_name,
                 self.name,
-                1,
+                True,
                 self.output.is_simulated()
             )
         )
@@ -54,11 +52,11 @@ class BRGB(Subscriber):
         self.current_color = "OFF"
         log(f"🌑 {self.name} turned OFF")
         self.telegraf_client.send(
-            MqttTelegrafPoint(
+            MqttTelegrafSingleFieldPoint(
                 "BRGB",
                 self.device_name,
                 self.name,
-                0,
+                False,
                 self.output.is_simulated()
             )
         )

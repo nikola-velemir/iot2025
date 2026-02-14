@@ -1,8 +1,8 @@
 import threading
 
 from shared.logger.logger import log
-from shared.mqtt.influx.mqtt_telegraf_point import MqttTelegrafPoint
 from shared.mqtt.influx.mqtt_telegraf import MqttTelegrafBatchClient
+from shared.mqtt.influx.mqtt_telegraf_single_field_point import MqttTelegrafSingleFieldPoint
 from shared.pubsub.subscriber import Subscriber
 from shared.sensors.door_motion_sensor.event import MotionStateChanged
 from shared.actuators.door_light.output import LightOutput
@@ -48,7 +48,7 @@ class DoorLightActuator(Subscriber):
 
     def on_state_change(self, is_light: bool):
         self.mqtt_client.send(
-            MqttTelegrafPoint(
+            MqttTelegrafSingleFieldPoint(
                 "LightActuator",
                 self.device_name,
                 self.name,

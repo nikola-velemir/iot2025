@@ -1,4 +1,4 @@
-import {Component, inject, OnDestroy, OnInit} from '@angular/core';
+import {ChangeDetectorRef, Component, inject, NgZone, OnDestroy, OnInit} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import {Navbar} from './navbar/navbar';
 import {LoaderDirective} from './services/loader/loading-directive';
@@ -17,6 +17,8 @@ export class App implements OnDestroy, OnInit {
   private isWsConnecting = false;
   private wsService = inject(WebSocketService);
   private globalState = inject(GlobalStateService);
+  private cdr = inject(ChangeDetectorRef);
+  private zone = inject(NgZone);
 
   ngOnInit() {
     this.startRealTimeUpdates();
@@ -59,6 +61,9 @@ export class App implements OnDestroy, OnInit {
 
   private handleWsUpdate(payload: RealTimeData) {
     console.log(payload);
-    this.globalState.setGlobalState(payload);
+    this.zone.run(() => {
+      this.globalState.setGlobalState(payload);
+      this.cdr.detectChanges();
+    })
   }
 }

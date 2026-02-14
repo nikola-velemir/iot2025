@@ -1,6 +1,6 @@
 from shared.mqtt.back.send.alarm.mqtt_back_alarm_gyro_payload import MqttBackAlarmGyroPayload
 from shared.mqtt.back.send.mqtt_back import MqttBackBatchClient
-from shared.mqtt.influx.mqtt_telegraf_point import MqttTelegrafPoint
+from shared.mqtt.influx.mqtt_telegraf_multiple_field_gyro_point import MqttTelegrafMultipleGyroFieldPoint
 from shared.sensors.gyroscope.input import GyroscopeInput
 
 
@@ -42,14 +42,13 @@ class GyroscopeSensor:
                 abs(z - last_z) > self.threshold)
 
     def on_data_change(self, x, y, z):
-        for axis, value in [("gyro_x", x), ("gyro_y", y), ("gyro_z", z)]:
-            self.mqtt_client.send(
-                MqttTelegrafPoint(
-                    axis,
-                    self.device_name,
-                    self.name,
-                    value,
-                    self.gyro_input.is_simulated()
-                )
+        self.mqtt_client.send(
+            MqttTelegrafMultipleGyroFieldPoint(
+                "GYRO",
+                self.device_name,
+                self.name,
+                self.gyro_input.is_simulated(),
+                x, y, z
             )
+        )
         self._send_client.send(MqttBackAlarmGyroPayload("gyro"))

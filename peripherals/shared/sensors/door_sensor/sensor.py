@@ -4,7 +4,7 @@ from shared.logger.logger import log
 from shared.mqtt.back.send.alarm.mqtt_back_alarm_open_for_too_long import MqttBackAlarmOpenForTooLongPayload
 from shared.mqtt.back.send.mqtt_back import MqttBackBatchClient
 from shared.mqtt.influx.mqtt_telegraf import MqttTelegrafBatchClient
-from shared.mqtt.influx.mqtt_telegraf_point import MqttTelegrafPoint
+from shared.mqtt.influx.mqtt_telegraf_single_field_point import MqttTelegrafSingleFieldPoint
 from shared.pubsub.publisher import Publisher
 from shared.sensors.door_sensor.event import DoorStateChanged
 from shared.sensors.door_sensor.input import ButtonInput
@@ -36,7 +36,7 @@ class DoorSensor(Publisher):
         log("Door is OPEN" if event.is_open else "Door is CLOSED")
 
         self.mqtt_client.send(
-            MqttTelegrafPoint(
+            MqttTelegrafSingleFieldPoint(
                 "DoorSensor",
                 self.device_name,
                 self.name,

@@ -29,7 +29,7 @@ public class RealTimeService {
         this.influxDbClient = influxDbConfiguration.createClient("iotBucket");
     }
 
-    @Scheduled(fixedRate = 3000)
+    @Scheduled(fixedRate = 1000)
     public void broadcastRealTimeData() {
         try {
             RealTimeData realTimeData = fetchFullRealTimeState(globalState);
@@ -53,11 +53,23 @@ public class RealTimeService {
             for (FluxRecord record : table.getRecords()) {
                 String device = (String) record.getValueByKey("device_name");
                 String sensorName = (String) record.getValueByKey("name");
-                Object value = record.getValue();
+                String fieldName = record.getField();
 
-                if (device != null && sensorName != null) {
-                    sensorMap.put(device.toLowerCase() + "_" + sensorName.toLowerCase(), String.valueOf(value));
+                if (device == null || sensorName == null) continue;
+
+                String baseKey = device.toLowerCase() + "_" + sensorName.toLowerCase();
+
+                String finalKey;
+                if (fieldName.startsWith("value_")) {
+                    String axis = fieldName.replace("value_", "");
+                    finalKey = baseKey + "_" + axis;
+                } else if (sensorName.toLowerCase().contains("dht")) {
+                    finalKey = baseKey + "_" + record.getMeasurement().toLowerCase();
+                } else {
+                    finalKey = baseKey;
                 }
+
+                sensorMap.put(finalKey, String.valueOf(record.getValue()));
             }
         }
 
@@ -68,21 +80,47 @@ public class RealTimeService {
         return new RealTimeData(
                 globalState.isAlarmOn(),
                 new Pi1(
-                        m.getOrDefault("pi1_ds1", ""), m.getOrDefault("pi1_dpir1", ""),
-                        m.getOrDefault("pi1_dus1", ""), m.getOrDefault("pi1_webc", ""),
-                        m.getOrDefault("pi1_dl", ""), m.getOrDefault("pi1_dms", ""),
-                        m.getOrDefault("pi1_db", "")
+                        Boolean.parseBoolean(m.getOrDefault("pi1_ds1", "false")) ? "DOOR OPEN" : "DOOR CLOSED",
+                        Boolean.parseBoolean(m.getOrDefault("pi1_dpir1", "false")) ? "MOTION DETECTED" : "NO MOTION",
+                        String.format("Distance: %.2f meters", Double.parseDouble(m.getOrDefault("pi1_dus1", "0.0"))),
+                        m.getOrDefault("pi1_webc", ""), // todo webcam
+                        Boolean.parseBoolean(m.getOrDefault("pi1_dl", "false")) ? "ON" : "OFF",
+                        String.format("Last key pressed: %s", m.getOrDefault("pi1_dms", "none")),
+                        Boolean.parseBoolean(m.getOrDefault("pi1_db", "false")) ? "ON" : "OFF"
                 ),
                 new Pi2(
-                        m.getOrDefault("pi2_dus2", ""), m.getOrDefault("pi2_dpir2", ""),
-                        m.getOrDefault("pi2_ds2", ""), m.getOrDefault("pi2_four_sd", ""),
-                        m.getOrDefault("pi2_btn", ""), m.getOrDefault("pi2_dht3", ""),
-                        m.getOrDefault("pi2_gyr", "")
+                        String.format("Distance: %.2f meters", Double.parseDouble(m.getOrDefault("pi2_dus2", "0.0"))),
+                        Boolean.parseBoolean(m.getOrDefault("pi2_dpir2", "false")) ? "MOTION DETECTED" : "NO MOTION",
+                        Boolean.parseBoolean(m.getOrDefault("pi2_ds2", "false")) ? "DOOR OPEN" : "DOOR CLOSED",
+                        m.getOrDefault("pi2_four_sd", ""), // todo stopwatch
+                        Boolean.parseBoolean(m.getOrDefault("pi2_btn", "false")) ? "PRESSED" : "NOT PRESSED",
+                        String.format(
+                            "Temperature: %.2fC, Humidity: %.1f%%",
+                            Double.parseDouble(m.getOrDefault("pi2_dht3_temperature", "0.0")),
+                            Double.parseDouble(m.getOrDefault("pi2_dht3_humidity", "0.0"))
+                        ),
+                        String.format(
+                                "X: %.2f, Y: %.2f, Z: %.2f",
+                                Double.parseDouble(m.getOrDefault("pi2_gyr_x", "0.0")),
+                                Double.parseDouble(m.getOrDefault("pi2_gyr_y", "0.0")),
+                                Double.parseDouble(m.getOrDefault("pi2_gyr_z", "0.0"))
+                        )
                 ),
                 new Pi3(
-                        m.getOrDefault("pi3_ir", ""), m.getOrDefault("pi3_dht2", ""),
-                        m.getOrDefault("pi3_brgb", ""), m.getOrDefault("pi3_lcd", ""),
-                        m.getOrDefault("pi3_dpir3", ""), m.getOrDefault("pi3_dht1", "")
+                        String.format("Command: %s", m.getOrDefault("pi3_ir", "NONE")),
+                        String.format(
+                                "Temperature: %.2fC, Humidity: %.1f%%",
+                                Double.parseDouble(m.getOrDefault("pi3_dht2_temperature", "0.0")),
+                                Double.parseDouble(m.getOrDefault("pi3_dht2_humidity", "0.0"))
+                        ),
+                        Boolean.parseBoolean(m.getOrDefault("pi3_brgb", "false")) ? "ON" : "OFF",
+                        String.format("Text: \"%s\"", m.getOrDefault("pi3_lcd", "")),
+                        Boolean.parseBoolean(m.getOrDefault("pi3_dpir3", "false")) ? "MOTION DETECTED" : "NO MOTION",
+                        String.format(
+                                "Temperature: %.2fC, Humidity: %.1f%%",
+                                Double.parseDouble(m.getOrDefault("pi3_dht1_temperature", "0.0")),
+                                Double.parseDouble(m.getOrDefault("pi3_dht1_humidity", "0.0"))
+                        )
                 )
         );
     }

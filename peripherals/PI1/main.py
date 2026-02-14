@@ -15,15 +15,14 @@ DEVICE_NAME = "PI1"
 if __name__ == '__main__':
     config = load_config("PI1/config.json")
 
-
     print(config)
     threads = []
     stop_event = threading.Event()
 
     telgraf_client = MqttTelegrafBatchClient()
 
-    door_buzzer = initialize_door_light(config["DB"],"DB",DEVICE_NAME, telgraf_client)
-    door_light = initialize_door_light(config["DL"], "DL", DEVICE_NAME, telgraf_client)
+    door_buzzer = initialize_door_light(config["DB"],"DB", DEVICE_NAME, telgraf_client)
+    door_light = initialize_door_light(config["DL"],"DL", DEVICE_NAME, telgraf_client)
 
     alarm = AlarmSystem( "PI1_ALARM", DEVICE_NAME, telgraf_client, subscribers = [door_buzzer])
 
@@ -45,4 +44,3 @@ if __name__ == '__main__':
         log('Stopping app')
         for t in threads:
             stop_event.set()
-

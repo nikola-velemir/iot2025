@@ -2,9 +2,8 @@ from copy import deepcopy
 
 from shared.mqtt.back.send.alarm.mqtt_back_alarm_arm_payload import MqttBackAlarmArmPayload
 from shared.mqtt.back.send.mqtt_back import MqttBackBatchClient
-from shared.mqtt.back.send.mqtt_back_send_payload import MqttBackSendPayload
-from shared.mqtt.influx.mqtt_telegraf_point import MqttTelegrafPoint
 from shared.mqtt.influx.mqtt_telegraf import MqttTelegrafBatchClient
+from shared.mqtt.influx.mqtt_telegraf_single_field_point import MqttTelegrafSingleFieldPoint
 from shared.pubsub.subscriber import Subscriber
 from shared.sensors.keypad.input import KeypadInput
 from shared.logger.logger import log
@@ -30,7 +29,7 @@ class KeyPad:
 
     def on_key_pressed(self, key: str):
         self.mqtt_client.send(
-            MqttTelegrafPoint(
+            MqttTelegrafSingleFieldPoint(
                 "KeypadSensor",
                 self.device_name,
                 self.name,
@@ -45,7 +44,3 @@ class KeyPad:
             print("POKUSAJ ARMOVANJA")
             self.mqtt_send_client.send(MqttBackAlarmArmPayload(deepcopy(self._current_input_pint)))
             self._current_input_pint = ""
-            # for subscriber in self._subscribers:
-            #     subscriber(key)
-
-

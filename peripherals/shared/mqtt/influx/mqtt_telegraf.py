@@ -5,6 +5,7 @@ from queue import Queue, Empty
 import paho.mqtt.client as mqtt
 
 from shared.mqtt.influx.mqtt_telegraf_point import MqttTelegrafPoint
+from shared.mqtt.influx.mqtt_telegraf_single_field_point import MqttTelegrafSingleFieldPoint
 
 BROKER = "localhost"
 PORT = 1883
@@ -58,15 +59,18 @@ class MqttTelegrafBatchClient:
         for data_point in batch:
             dynamic_topic = f"sensors_actuators/{data_point.type_name}"
 
-            payload = json.dumps({
+            payload_no_value = {
                 "name": data_point.name,
                 "device_name": data_point.device_name,
-                "value": data_point.value,
                 "is_simulated": data_point.is_simulated,
                 "time": data_point.time
-            })
+            }
 
-            self.client.publish(dynamic_topic, payload=payload, qos=1)
+            full_payload = payload_no_value | data_point.get_value()
+
+            payload_string = json.dumps(full_payload)
+
+            self.client.publish(dynamic_topic, payload=payload_string, qos=1)
 
         print(f"Flushed {len(batch)} points to their respective topics.")
 
@@ -89,7 +93,7 @@ if __name__ == "__main__":
     try:
         print("Sending 25 messages rapidly...")
         for i in range(25):
-            mqtt_service.send(MqttTelegrafPoint("PI1", "name1", 15, 0.4, True))
+            mqtt_service.send(MqttTelegrafSingleFieldPoint("PI1", "name1", 15, 0.4, True))
             time.sleep(0.1)
 
         print("Waiting for final time-based flush...")

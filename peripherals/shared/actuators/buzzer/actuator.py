@@ -1,7 +1,7 @@
 from shared.actuators.buzzer.output import BuzzerOutput
 from shared.alarm.event import AlarmActivated, AlarmDeactivated
-from shared.mqtt.influx.mqtt_telegraf_point import MqttTelegrafPoint
 from shared.mqtt.influx.mqtt_telegraf import MqttTelegrafBatchClient
+from shared.mqtt.influx.mqtt_telegraf_single_field_point import MqttTelegrafSingleFieldPoint
 from shared.pubsub.subscriber import Subscriber
 
 
@@ -22,7 +22,7 @@ class DoorBuzzerActuator(Subscriber):
             is_on = False
 
         self.telegraf_client.send(
-            MqttTelegrafPoint(
+            MqttTelegrafSingleFieldPoint(
                 "BuzzerActuator",
                 self.device_name,
                 self.name,
