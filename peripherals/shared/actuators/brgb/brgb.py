@@ -8,7 +8,7 @@ from shared.pubsub.subscriber import Subscriber
 class BRGB(Subscriber):
     def __init__(self, name, mqtt_client):
         self.name = name
-        self.mqtt_client = mqtt_client
+        self.telegraf_client = mqtt_client
         self.current_color = "OFF"
         self.receive_client = MqttReceiver("brgb", self.msg_callback)
         self.receive_client.start()

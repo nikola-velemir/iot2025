@@ -32,7 +32,7 @@ class Button(Publisher):
 
         self.mqtt_client.send(
             MqttTelegrafPoint(
-                self.full_name,
+                "BTN", # promeni na tip
                 self.device_name,
                 self.name,
                 1,
