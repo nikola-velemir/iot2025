@@ -16,7 +16,7 @@ public class BRGBProducerService {
 
     public void sendBrgbLightUpdate(String color) {
         bgrbProducerChannel.handleMessage(
-                MessageBuilder.withPayload(String.format("BGRB_NEW_LIGHT:%s", color))
+                MessageBuilder.withPayload(String.format("BRGB_NEW_LIGHT:%s", color))
                         .setHeader(MqttHeaders.TOPIC, "back_receive/brgb")
                         .build()
         );

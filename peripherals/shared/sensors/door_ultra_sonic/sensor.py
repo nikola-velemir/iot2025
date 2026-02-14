@@ -2,6 +2,8 @@ import time
 from collections import deque
 
 from shared.logger.logger import log
+from shared.mqtt.back.send.alarm.mqtt_back_alarm_door_person_event_payload import MqttBackAlarmDoorPersonEventPayload
+from shared.mqtt.back.send.mqtt_back import MqttBackBatchClient
 from shared.mqtt.influx.mqtt_telegraf_point import MqttTelegrafPoint
 from shared.mqtt.influx.mqtt_telegraf import MqttTelegrafBatchClient
 from shared.pubsub.subscriber import Subscriber
@@ -19,6 +21,7 @@ class UltrasonicSensor(Subscriber):
         self.device_name = device_name
         self.mqtt_client: MqttTelegrafBatchClient = mqtt_client
         self.history = deque(maxlen=50)
+        self.send_client = MqttBackBatchClient()
     def callback(self, event):
         if not isinstance(event, MotionStateChanged):
             return
@@ -26,9 +29,11 @@ class UltrasonicSensor(Subscriber):
         if direction == "Entering":
             print("Person entering")
             # send that person entered on back
+            self.send_client.send(MqttBackAlarmDoorPersonEventPayload("entered"))
+
         if direction == "Exiting":
             print("Person exiting")
-            # send that
+            self.send_client.send(MqttBackAlarmDoorPersonEventPayload("left"))
 
     def poll(self):
         distance = self.input_device.read_distance()
