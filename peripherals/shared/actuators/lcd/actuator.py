@@ -46,7 +46,7 @@ class LcdActuator(Subscriber):
 
                     self.telegraf_client.send(
                         MqttTelegrafPoint(
-                            "BRGB",  # promeni na tip
+                            "LCD",  # promeni na tip
                             self.device_name,
                             self.name,
                             line2,

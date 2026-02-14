@@ -6,7 +6,7 @@ from shared.sensors.gyroscope.input import GyroscopeInput
 
 class GyroscopeSensor:
     def __init__(self, gyro_input: GyroscopeInput, name, device_name, mqtt_client,
-                 threshold=0.5, report_all=False):
+                 threshold=0.2, report_all=False):
         self.gyro_input = gyro_input
         self.name = name
         self.device_name = device_name

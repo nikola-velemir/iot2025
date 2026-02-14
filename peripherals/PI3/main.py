@@ -18,16 +18,14 @@ if __name__ == "__main__":
     stop_event = threading.Event()
     telegraf_client = MqttTelegrafBatchClient()
 
-    brgb = BRGB(config["BRGB"],'PI2', telegraf_client)
-    #lcd = LcdActuator(SimulatedLcd(), config["LCD"], "PI3")
-
-
+    brgb = BRGB("BGRB", 'PI2', telegraf_client) # todo dodati konfig
+    lcd = LcdActuator(SimulatedLcd(), "LCD", "PI3", telegraf_client, True) # todo dodati konfig
 
     try:
-        # run_dht_sensor(config["DHT2"], threads,stop_event, mqtt_client,"DHT2","PI3", subscribers=[lcd])
-        # run_dht_sensor(config["DHT1"], threads,stop_event, mqtt_client,"DHT1","PI3", subscribers=[lcd])
+        run_dht_sensor(config["DHT2"], threads,stop_event, telegraf_client,"DHT2","PI3", subscribers=[lcd])
+        run_dht_sensor(config["DHT1"], threads,stop_event, telegraf_client,"DHT1","PI3", subscribers=[lcd])
         run_ir_sensor(config["IR"], threads, stop_event, telegraf_client, "IR", "PI3", subscribers=[brgb])
-        # run_motion_sensor(config["DPIR3"], threads, stop_event, mqtt_client, "DPIR3", "PI3")
+        run_motion_sensor(config["DPIR3"], threads, stop_event, telegraf_client, "DPIR3", "PI3")
         threading.Thread(
             target=logger_loop,
             args=(stop_event,),

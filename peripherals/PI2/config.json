@@ -9,7 +9,7 @@
       "d": 12
     }
   },
-  "GSG": {
+  "GYR": {
     "description": "Gyroscope",
     "simulated": true,
     "pins": {

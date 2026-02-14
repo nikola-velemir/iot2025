@@ -10,7 +10,7 @@ class BRGB(Subscriber):
     def __init__(self, name, device_name, mqtt_client):
         self.name = name
         self.telegraf_client = mqtt_client
-        self.device_name = name
+        self.device_name = device_name
         self.current_color = "OFF"
         self.receive_client = MqttReceiver("brgb", self.msg_callback)
         self.receive_client.start()
@@ -45,7 +45,7 @@ class BRGB(Subscriber):
                 self.device_name,
                 self.name,
                 1,
-                self.button.is_simulated()
+                True # todo siumulirani i pravi output
             )
         )
 
@@ -58,6 +58,6 @@ class BRGB(Subscriber):
                 self.device_name,
                 self.name,
                 0,
-                self.button.is_simulated()
+                True # todo siumulirani i pravi output
             )
         )

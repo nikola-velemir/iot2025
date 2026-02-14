@@ -25,19 +25,16 @@ if __name__ == '__main__':
 
     door_buzzer = DoorBuzzerActuator(SimulatedBuzzer(), "DBZ2", "PI2", telegraf_client)
 
-
     kitchen_stopwatch = KitchenStopwatch(SimulatedStopwatchOutput(), "4SD", "PI2", telegraf_client)
     alarm = AlarmSystem( "PI1_ALARM", "PI1", telegraf_client, subscribers = [door_buzzer])
 
-    #     def __init__(self, output: TimerOutput, name, device_name, mqtt_client, add_seconds=10):
-
     try:
-        # run_gyro_sensor(config["GSG"], threads, stop_event, mqtt_client, "GSG", "PI2")
-        # dus = run_ultrasonic_sensor(config["DUS2"], threads, stop_event, mqtt_client, "DUS2", "PI2")
-        # run_dht_sensor(config["DHT3"], threads,stop_event, mqtt_client,"DHT3","PI2")
+        run_gyro_sensor(config["GYR"], threads, stop_event, telegraf_client, "GYR", "PI2")
+        dus = run_ultrasonic_sensor(config["DUS2"], threads, stop_event, telegraf_client, "DUS2", "PI2")
+        run_dht_sensor(config["DHT3"], threads,stop_event, telegraf_client,"DHT3","PI2")
         run_door_sensor(config["DS2"], threads, stop_event, telegraf_client,"DS2","PI2")
-        # run_motion_sensor(config['DPIR2'], threads, stop_event, mqtt_client, "DPIR2", "PI2", [dus])
-        #run_button(config['BTN'], threads, stop_event, telegraf_client, "BTN", 'Kitchen Button', "PI2", [kitchen_stopwatch])
+        run_motion_sensor(config['DPIR2'], threads, stop_event, telegraf_client, "DPIR2", "PI2", [dus])
+        run_button(config['BTN'], threads, stop_event, telegraf_client, "BTN", 'Kitchen Button', "PI2", [kitchen_stopwatch])
         threading.Thread(
             target=logger_loop,
             args=(stop_event,),
