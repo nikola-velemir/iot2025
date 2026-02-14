@@ -1,4 +1,7 @@
+from paho.mqtt.subscribe import callback
+
 from shared.logger.logger import log
+from shared.mqtt.back.receive.mqtt_back_receiver import MqttReceiver
 from shared.pubsub.subscriber import Subscriber
 
 
@@ -7,16 +10,25 @@ class BRGB(Subscriber):
         self.name = name
         self.mqtt_client = mqtt_client
         self.current_color = "OFF"
+        self.receive_client = MqttReceiver("brgb", self.msg_callback)
+        self.receive_client.start()
 
-    def callback(self, event):
+    def msg_callback(self, topic, payload):
+        if "BRGB_NEW_LIGHT" in payload:
+            color_event = payload.split(":")[-1]
+            self._handle_color_change(color_event)
+
+    def _handle_color_change(self, event):
         log(f"[{self.name}] Actuator processing command: {event}")
 
         if event == "ON":
             self.turn_on()
         elif event == "OFF":
             self.turn_off()
-        elif event in ["RED", "GREEN", "BLUE"]:
+        else:
             self.set_color(event)
+    def callback(self, event):
+       self._handle_color_change(event)
 
     def set_color(self, color):
         self.current_color = color

@@ -1,3 +1,8 @@
+from copy import deepcopy
+
+from shared.mqtt.back.send.alarm.mqtt_back_alarm_arm_payload import MqttBackAlarmArmPayload
+from shared.mqtt.back.send.mqtt_back import MqttBackBatchClient
+from shared.mqtt.back.send.mqtt_back_send_payload import MqttBackSendPayload
 from shared.mqtt.influx.mqtt_telegraf_point import MqttTelegrafPoint
 from shared.mqtt.influx.mqtt_telegraf import MqttTelegrafBatchClient
 from shared.pubsub.subscriber import Subscriber
@@ -12,6 +17,8 @@ class KeyPad:
         self.name = name
         self.device_name = device_name
         self.mqtt_client: MqttTelegrafBatchClient = mqtt_client
+        self._current_input_pint = ""
+        self.mqtt_send_client = MqttBackBatchClient()
 
     def subscribe(self, subscriber: Subscriber):
         self._subscribers.append(subscriber.callback)
@@ -33,8 +40,12 @@ class KeyPad:
         )
 
         log(f"[KEYPAD] Key pressed: {key}")
-
-        for subscriber in self._subscribers:
-            subscriber(key)
+        self._current_input_pint += key
+        if len(self._current_input_pint) == 4:
+            print("POKUSAJ ARMOVANJA")
+            self.mqtt_send_client.send(MqttBackAlarmArmPayload(deepcopy(self._current_input_pint)))
+            self._current_input_pint = ""
+            # for subscriber in self._subscribers:
+            #     subscriber(key)
 
 

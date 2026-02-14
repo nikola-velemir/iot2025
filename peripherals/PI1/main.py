@@ -9,7 +9,9 @@ from shared.actuators.door_light.output import SimulatedLightOutput
 from shared.config import load_config
 from shared.logger.logger import log, logger_loop
 from shared.mqtt.influx.mqtt_telegraf import MqttTelegrafBatchClient
+from shared.sensors.door_motion_sensor.component import run_motion_sensor
 from shared.sensors.door_sensor.component import run_door_sensor
+from shared.sensors.door_ultra_sonic.component import run_ultrasonic_sensor
 from shared.sensors.keypad.component import run_keypad
 
 if __name__ == '__main__':
@@ -23,18 +25,17 @@ if __name__ == '__main__':
     door_buzzer = DoorBuzzerActuator(SimulatedBuzzer(), "DBZ1", "PI1", mqtt_telgraf_client)
     door_light = DoorLightActuator(SimulatedLightOutput(), "DL1", "PI1", mqtt_telgraf_client)
 
-    alarm = AlarmSystem( "DoorAlarm", "PI1", mqtt_telgraf_client, subscribers = [door_buzzer])
+    alarm = AlarmSystem( "PI1_ALARM", "PI1", mqtt_telgraf_client, subscribers = [door_buzzer])
     # todo namestiti da je alarm system zapravo hendler poruka sa beka, a ne i da se brine o logici senzora, to
     # todo prebaciti u same senzor funkcije poput run_door_sensor
 
     # todo brgb system kao kozumer od beka za bgrb
     # todo stopwatch system kao konzumer od beka za stopericu
     try:
-        run_door_sensor(config['DS1'], threads, stop_event, mqtt_telgraf_client, "DS1", "PI1", [alarm])
-        # dus = run_ultrasonic_sensor(config['DUS1'], threads, stop_event, mqtt_client, "DUS1", "PI1")
-        # run_motion_sensor(config['DPIR1'], threads, stop_event, mqtt_client, "DPIR1", "PI1", [dus])
-        run_keypad(config['DMS1'], threads, stop_event, mqtt_telgraf_client, "DMS1", "PI1", subscribers=[alarm])
-        # todo refaktorisati da je keypad nezavisan od alarm objekta na paju
+        run_door_sensor(config['DS1'], threads, stop_event, mqtt_telgraf_client, "DS1", "PI1", )
+        dus = run_ultrasonic_sensor(config['DUS1'], threads, stop_event, mqtt_telgraf_client, "DUS1", "PI1")
+        run_motion_sensor(config['DPIR1'], threads, stop_event, mqtt_telgraf_client, "DPIR1", "PI1", [dus])
+        run_keypad(config['DMS1'], threads, stop_event, mqtt_telgraf_client, "DMS1", "PI1")
 
         threading.Thread(
             target=logger_loop,
