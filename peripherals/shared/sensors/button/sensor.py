@@ -1,8 +1,8 @@
 from shared.logger.logger import log
-from shared.mqtt.influx.mqtt_telegraf_point import MqttTelegrafPoint
 from shared.mqtt.influx.mqtt_telegraf import MqttTelegrafBatchClient
+from shared.mqtt.influx.mqtt_telegraf_single_field_point import MqttTelegrafSingleFieldPoint
 from shared.pubsub.publisher import Publisher
-from shared.sensors.door_sensor.event import DoorStateChanged
+from shared.sensors.button.event import ButtonEvent
 from shared.sensors.door_sensor.input import ButtonInput
 
 
@@ -23,18 +23,18 @@ class Button(Publisher):
         if is_open != self._last_state:
             self._last_state = is_open
 
-            event = DoorStateChanged(is_open=is_open)
+            event = ButtonEvent("PRESSED")
             self.on_state_change(event)
 
-    def on_state_change(self, event: DoorStateChanged):
+    def on_state_change(self, event: ButtonEvent):
         log(f"{self.full_name} is pressed")
 
         self.mqtt_client.send(
-            MqttTelegrafPoint(
-                self.full_name,
+            MqttTelegrafSingleFieldPoint(
+                "Button",
                 self.device_name,
                 self.name,
-                event.is_open,
+                True,
                 self.button.is_simulated()
             )
         )

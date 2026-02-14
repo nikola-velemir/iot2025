@@ -16,6 +16,7 @@ import tools.jackson.databind.ObjectMapper;
 public class AlarmConsumerService {
     private final GlobalState globalState;
     private final ObjectMapper objectMapper = new ObjectMapper();
+    private final AlarmProducerService alarmProducerService;
 
     @ServiceActivator(inputChannel = "alarmConsumerChannel")
     public void consume(Message<String> message) {
@@ -29,6 +30,7 @@ public class AlarmConsumerService {
                 case "person_event" -> updatePeopleInBuilding(json.get("person_event").stringValue());
                 case "motion" -> motionDetected("motion sensor");
                 case "gyro" -> motionDetected("gyro");
+                case "open_too_long" -> doorButtonNotPressedForMoreThan5Seconds();
                 default -> System.out.println("Unknown message type received: " + type);
             }
 
@@ -55,9 +57,10 @@ public class AlarmConsumerService {
 
     private void doorButtonNotPressedForMoreThan5Seconds() {
         System.out.println("DOOR OPENED FOR MOE THAN 5 SECONDS");
+        alarmProducerService.sendAlarmActivationSignal();
+
     }
 
     private void activateAlarmIfArmed() {
-
     }
 }

@@ -1,5 +1,5 @@
 from shared.logger.logger import log
-from shared.mqtt.influx.mqtt_telegraf_point import MqttTelegrafPoint
+from shared.mqtt.influx.mqtt_telegraf_single_field_point import MqttTelegrafSingleFieldPoint
 from shared.pubsub.publisher import Publisher
 from shared.sensors.infra_red_sensor.input import IRInput
 
@@ -12,8 +12,6 @@ class IRSensor(Publisher):
         self.device_name = device_name
         self.mqtt_client = mqtt_client
 
-
-
     def poll(self):
         command = self.ir_input.read_key()
 
@@ -24,7 +22,7 @@ class IRSensor(Publisher):
         log(f"[{self.name}] IR Command received: {command}")
 
         self.mqtt_client.send(
-            MqttTelegrafPoint(
+            MqttTelegrafSingleFieldPoint(
                 "InfraredRemote",
                 self.device_name,
                 self.name,

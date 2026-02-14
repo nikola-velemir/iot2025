@@ -1,7 +1,6 @@
 from shared.logger.logger import log
-from shared.mqtt.influx.mqtt_telegraf_point import MqttTelegrafPoint
+from shared.mqtt.influx.mqtt_telegraf_single_field_point import MqttTelegrafSingleFieldPoint
 from shared.pubsub.publisher import Publisher
-from shared.pubsub.subscriber import Subscriber
 from shared.sensors.dht_sensor.event import DHTEvent
 from shared.sensors.dht_sensor.input import DHTInput
 
@@ -31,10 +30,10 @@ class DHTSensor(Publisher):
 
         # Sending Temperature
         self.mqtt_client.send(
-            MqttTelegrafPoint("Temperature", self.device_name, self.name, temp, self.dht_input.is_simulated())
+            MqttTelegrafSingleFieldPoint("Temperature", self.device_name, self.name, temp, self.dht_input.is_simulated())
         )
         # Sending Humidity
         self.mqtt_client.send(
-            MqttTelegrafPoint("Humidity", self.device_name, self.name, hum, self.dht_input.is_simulated())
+            MqttTelegrafSingleFieldPoint("Humidity", self.device_name, self.name, hum, self.dht_input.is_simulated())
         )
         self.notify(DHTEvent(temp, hum, self.name))

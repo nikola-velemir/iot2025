@@ -14,13 +14,15 @@
   <ng-container matColumnDef="graph">
     <th mat-header-cell *matHeaderCellDef> Graph </th>
     <td mat-cell *matCellDef="let element">
-      <button (click)="openGrafanaGraph(element.url)" class="table-btn">Show graph</button>
+      @if (element.grafanaUrl) {
+        <button (click)="openGrafanaGraph(element.grafanaUrl)" class="table-btn">Show graph</button>
+      }
     </td>
   </ng-container>
 
   @if (anyAction) {
     <ng-container matColumnDef="actuator-actions">
-      <th mat-header-cell *matHeaderCellDef> Actuator actions </th>
+      <th mat-header-cell *matHeaderCellDef> Actions </th>
       <td mat-cell *matCellDef="let element">
         @if (element.action) {
           <button (click)="element.action.callback()" class="table-btn">{{ element.action.name }}</button>
@@ -30,9 +32,9 @@
   }
 
   <ng-container matColumnDef="current-state">
-    <th mat-header-cell *matHeaderCellDef> Current state </th>
+    <th mat-header-cell *matHeaderCellDef> Current state (last 5 minutes) </th>
     <td mat-cell *matCellDef="let element">
-      {{ element.currentState }}
+      {{ element.currentState() }}
     </td>
   </ng-container>
 

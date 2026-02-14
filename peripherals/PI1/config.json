@@ -39,7 +39,7 @@
     "simulated": true,
     "pins": {}
   },
-  "DMS1": {
+  "DMS": {
     "description": "Door Membrane Switch",
     "simulated": true,
     "pins": {}

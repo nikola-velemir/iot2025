@@ -167,11 +167,11 @@
       "pluginVersion": "12.3.1",
       "targets": [
         {
-          "query": "from(bucket: \"iotBucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"BuzzerActuator\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> filter(fn: (r) => r[\"device_name\"] == \"PI1\")\n  |> filter(fn: (r) => r[\"name\"] == \"DBZ1\")\n  |> map(fn: (r) => ({ r with _value: if r._value then 1 else 0 }))\n  |> aggregateWindow(every: 5s, fn: last, createEmpty: true)\n  |> fill(column: \"_value\", value: 0)\n  ",
+          "query": "from(bucket: \"iotBucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"BuzzerActuator\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> filter(fn: (r) => r[\"device_name\"] == \"PI1\")\n  |> filter(fn: (r) => r[\"name\"] == \"DB\")\n  |> map(fn: (r) => ({ r with _value: if r._value then 1 else 0 }))\n  |> aggregateWindow(every: 5s, fn: last, createEmpty: true)\n  |> fill(column: \"_value\", value: 0)\n  ",
           "refId": "A"
         }
       ],
-      "title": "DBZ1 - PI1's Buzzer",
+      "title": "DB - PI1's Buzzer",
       "type": "timeseries"
     },
     {

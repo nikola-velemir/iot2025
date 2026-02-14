@@ -1,6 +1,8 @@
 from shared.logger.logger import log
+from shared.mqtt.back.send.alarm.mqtt_back_alarm_motion_payload import MqttBackAlarmMotionPayload
+from shared.mqtt.back.send.mqtt_back import MqttBackBatchClient
 from shared.mqtt.influx.mqtt_telegraf import MqttTelegrafBatchClient
-from shared.mqtt.influx.mqtt_telegraf_point import MqttTelegrafPoint
+from shared.mqtt.influx.mqtt_telegraf_single_field_point import MqttTelegrafSingleFieldPoint
 from shared.pubsub.publisher import Publisher
 from shared.sensors.door_motion_sensor.event import MotionStateChanged
 from shared.sensors.door_motion_sensor.input import MotionInput
@@ -14,6 +16,7 @@ class DoorMotionSensor(Publisher):
         self.name = name
         self.device_name = device_name
         self.mqtt_client: MqttTelegrafBatchClient = mqtt_client
+        self.send_client = MqttBackBatchClient()
 
 
     def poll(self):
@@ -27,7 +30,7 @@ class DoorMotionSensor(Publisher):
         log("Motion detected!" if event.motion_detected else "No motion")
 
         self.mqtt_client.send(
-            MqttTelegrafPoint(
+            MqttTelegrafSingleFieldPoint(
                 "MotionSensor",
                 self.device_name,
                 self.name,
@@ -35,4 +38,6 @@ class DoorMotionSensor(Publisher):
                 self.motion_input.is_simulated()
             )
         )
-        self.notify(event)
+        if event.motion_detected:
+            self.send_client.send(MqttBackAlarmMotionPayload("motion_sensor"))
+            self.notify(event)

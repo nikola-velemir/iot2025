@@ -1,4 +1,14 @@
 {
+  "FOUR_SD": {
+    "description": "Stopwatch",
+    "simulated": true,
+    "pins": {
+      "a": 123,
+      "b": 114,
+      "c": 213,
+      "d": 132
+    }
+  },
   "DHT3": {
     "description": "Door Sensor (Button)",
     "simulated": true,
@@ -9,7 +19,7 @@
       "d": 12
     }
   },
-  "GSG": {
+  "GYR": {
     "description": "Gyroscope",
     "simulated": true,
     "pins": {

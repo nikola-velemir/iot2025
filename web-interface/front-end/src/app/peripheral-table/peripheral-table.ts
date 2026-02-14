@@ -9,24 +9,9 @@ import {
   MatRowDef, MatTable, MatTableDataSource
 } from '@angular/material/table';
 import {MatSort, MatSortModule} from '@angular/material/sort';
-import {MatDialog, MatDialogRef} from '@angular/material/dialog';
-import {StopwatchDialog} from '../dialog/stopwatch-dialog/stopwatch-dialog';
-import {firstValueFrom} from 'rxjs';
+import {MatDialog} from '@angular/material/dialog';
 import {GraphDialog} from '../dialog/graph-dialog/graph-dialog';
-
-export interface TableRow {
-  name: string;
-  type: string;
-  peripheralType: PeripheralType;
-  action?: {
-    name: string,
-    callback: () => void;
-  };
-  currentState: string;
-  grafanaUrl: string;
-}
-
-export type PeripheralType = "Sensor" | "Actuator";
+import {PeripheralTabularView} from '../models/PeripheralTabularView';
 
 @Component({
   selector: 'app-peripheral-table',
@@ -47,7 +32,7 @@ export type PeripheralType = "Sensor" | "Actuator";
   styleUrl: './peripheral-table.scss',
 })
 export class PeripheralTable implements AfterViewInit, OnInit {
-  @Input() dataSourceInput: TableRow[] = [];
+  @Input() dataSourceInput: PeripheralTabularView[] = [];
   @ViewChild(MatSort) sort!: MatSort;
 
   dialog = inject(MatDialog);
@@ -71,8 +56,11 @@ export class PeripheralTable implements AfterViewInit, OnInit {
   }
 
   async openGrafanaGraph(url: string) {
-    const dialogRef: MatDialogRef<GraphDialog, null | undefined> = this.dialog.open(GraphDialog, {
-      height: '600px',
+    this.dialog.open(GraphDialog, {
+      width: '60vw',
+      maxWidth: '60vw',
+      height: 'auto',
+      data: { url: url }
     });
   }
 }
