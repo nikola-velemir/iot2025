@@ -18,7 +18,7 @@
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 0,
-  "id": 4,
+  "id": 2,
   "links": [],
   "panels": [
     {
@@ -29,21 +29,41 @@
       "fieldConfig": {
         "defaults": {
           "color": {
-            "mode": "thresholds"
+            "mode": "palette-classic"
           },
           "custom": {
-            "align": "auto",
-            "cellOptions": {
-              "type": "auto"
-            },
-            "footer": {
-              "reducers": []
-            },
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
             "hideFrom": {
+              "legend": false,
+              "tooltip": false,
               "viz": false
             },
-            "inspect": false,
-            "minWidth": 500
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
           },
           "mappings": [],
           "thresholds": {
@@ -63,25 +83,34 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 13,
+        "h": 11,
         "w": 23,
         "x": 0,
         "y": 0
       },
-      "id": 6,
+      "id": 10,
       "options": {
-        "cellHeight": "md",
-        "showHeader": true
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.2+security-01",
       "targets": [
         {
-          "query": "\nfrom(bucket: \"iotBucket\")\n           |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"KeypadSensor\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n            |> sort(columns: [\"_time\"], desc: true)",
+          "query": "from(bucket: \"iotBucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"FOUR_SD\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> filter(fn: (r) => r[\"device_name\"] == \"PI2\")\n  |> filter(fn: (r) => r[\"name\"] == \"FOUR_SD\")",
           "refId": "A"
         }
       ],
-      "title": "DMS - PI1's keypad",
-      "type": "table"
+      "title": "4SD - PI2's stopwatch display",
+      "type": "timeseries"
     },
     {
       "datasource": {
@@ -145,12 +174,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 16,
+        "h": 12,
         "w": 23,
         "x": 0,
-        "y": 13
+        "y": 11
       },
-      "id": 5,
+      "id": 9,
       "options": {
         "legend": {
           "calcs": [],
@@ -164,14 +193,14 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.2+security-01",
       "targets": [
         {
-          "query": "from(bucket: \"iotBucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"BuzzerActuator\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> filter(fn: (r) => r[\"device_name\"] == \"PI1\")\n  |> filter(fn: (r) => r[\"name\"] == \"DBZ1\")\n  |> map(fn: (r) => ({ r with _value: if r._value then 1 else 0 }))\n  |> aggregateWindow(every: 5s, fn: last, createEmpty: true)\n  |> fill(column: \"_value\", value: 0)\n  ",
+          "query": "from(bucket: \"iotBucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Button\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> filter(fn: (r) => r[\"device_name\"] == \"PI2\")\n  |> filter(fn: (r) => r[\"name\"] == \"BTN\")\n  |> map(fn: (r) => ({ r with _value: if r._value then 1 else 0 }))\n  |> aggregateWindow(every: 5s, fn: last, createEmpty: true)\n  |> fill(column: \"_value\", value: 0)\n  ",
           "refId": "A"
         }
       ],
-      "title": "DBZ1 - PI1's Buzzer",
+      "title": "BTN - PI2's stopwatch button",
       "type": "timeseries"
     },
     {
@@ -239,9 +268,9 @@
         "h": 14,
         "w": 23,
         "x": 0,
-        "y": 29
+        "y": 23
       },
-      "id": 4,
+      "id": 8,
       "options": {
         "legend": {
           "calcs": [],
@@ -255,14 +284,14 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.2+security-01",
       "targets": [
         {
-          "query": "from(bucket: \"iotBucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"MotionSensor\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> filter(fn: (r) => r[\"device_name\"] == \"PI1\")\n  |> filter(fn: (r) => r[\"name\"] == \"DPIR1\")\n  |> map(fn: (r) => ({ r with _value: if r._value then 1 else 0 }))\n  |> aggregateWindow(every: 5s, fn: last, createEmpty: true)\n  |> fill(column: \"_value\", value: 0)\n  ",
+          "query": "from(bucket: \"iotBucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"GYRO\")\n  |> filter(fn: (r) => r[\"device_name\"] == \"PI2\")\n  |> filter(fn: (r) => r[\"name\"] == \"GYR\")",
           "refId": "A"
         }
       ],
-      "title": "DPIR1 - PI1's MotionSensor",
+      "title": "GYR - PI2's gyroscope",
       "type": "timeseries"
     },
     {
@@ -327,12 +356,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 15,
+        "h": 14,
         "w": 23,
         "x": 0,
-        "y": 43
+        "y": 37
       },
-      "id": 3,
+      "id": 7,
       "options": {
         "legend": {
           "calcs": [],
@@ -346,14 +375,14 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.2+security-01",
       "targets": [
         {
-          "query": "from(bucket: \"iotBucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"LightActuator\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> filter(fn: (r) => r[\"device_name\"] == \"PI1\")\n  |> map(fn: (r) => ({ r with _value: if r._value then 1 else 0 }))\n  |> aggregateWindow(every: 5s, fn: last, createEmpty: true)\n  |> fill(column: \"_value\", value: 0)",
+          "query": "from(bucket: \"iotBucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"Humidity\" or r[\"_measurement\"] == \"Temperature\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> filter(fn: (r) => r[\"device_name\"] == \"PI2\")\n  |> filter(fn: (r) => r[\"name\"] == \"DHT3\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
           "refId": "A"
         }
       ],
-      "title": "DL1 - PI1's Door Light",
+      "title": "DHT3 - PI2's Temperature and Humidity sensor",
       "type": "timeseries"
     },
     {
@@ -418,12 +447,12 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 15,
+        "h": 13,
         "w": 23,
         "x": 0,
-        "y": 58
+        "y": 51
       },
-      "id": 2,
+      "id": 6,
       "options": {
         "legend": {
           "calcs": [],
@@ -437,18 +466,21 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.2+security-01",
       "targets": [
         {
-          "query": "from(bucket: \"iotBucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"DoorSensor\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> filter(fn: (r) => r[\"device_name\"] == \"PI1\")\n  |> filter(fn: (r) => r[\"name\"]  == \"DS1\")\n  |> map(fn: (r) => ({ r with _value: if r._value then 1 else 0 }))\n  |> aggregateWindow(every: 5s, fn: last, createEmpty: true)\n  |> fill(column: \"_value\", value :0)",
+          "query": "from(bucket: \"iotBucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"UltrasonicSensor\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> filter(fn: (r) => r[\"device_name\"] == \"PI2\")\n  |> filter(fn: (r) => r[\"name\"] == \"DUS2\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
           "refId": "A"
         }
       ],
-      "title": "DS1 - PI1's Door Sensor",
+      "title": "DUS2 - PI2's Door Ultrasonic Sensor",
       "type": "timeseries"
     },
     {
-      "datasource": "InfluxDB",
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -472,15 +504,7 @@
             },
             "insertNulls": false,
             "lineInterpolation": "linear",
-            "lineStyle": {
-              "0": "s",
-              "1": "o",
-              "2": "l",
-              "3": "i",
-              "4": "d",
-              "fill": "solid"
-            },
-            "lineWidth": 2,
+            "lineWidth": 1,
             "pointSize": 5,
             "scaleDistribution": {
               "type": "linear"
@@ -517,9 +541,9 @@
         "h": 16,
         "w": 23,
         "x": 0,
-        "y": 73
+        "y": 64
       },
-      "id": 1,
+      "id": 5,
       "options": {
         "legend": {
           "calcs": [],
@@ -533,14 +557,105 @@
           "sort": "none"
         }
       },
-      "pluginVersion": "12.3.1",
+      "pluginVersion": "12.3.2+security-01",
       "targets": [
         {
-          "query": "from(bucket: \"iotBucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"UltrasonicSensor\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> filter(fn: (r) => r[\"device_name\"] == \"PI1\")\n  |> filter(fn: (r) => r[\"name\"] == \"DUS1\")\n  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\n  |> yield(name: \"mean\")",
+          "query": "from(bucket: \"iotBucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"MotionSensor\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> filter(fn: (r) => r[\"device_name\"] == \"PI2\")\n  |> filter(fn: (r) => r[\"name\"] == \"DPIR2\")\n  |> map(fn: (r) => ({ r with _value: if r._value then 1 else 0 }))\n  |> aggregateWindow(every: 5s, fn: last, createEmpty: true)\n  |> fill(column: \"_value\", value: 0)\n  ",
           "refId": "A"
         }
       ],
-      "title": "DUS1 - PI1's Door Ultrasonic Sensor",
+      "title": "DPIR2 - PI2's MotionSensor",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "P951FEA4DE68E13C5"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 23,
+        "x": 0,
+        "y": 80
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.3.2+security-01",
+      "targets": [
+        {
+          "query": "from(bucket: \"iotBucket\")\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\n|> filter(fn: (r) => r[\"_measurement\"] == \"DoorSensor\")\n  |> filter(fn: (r) => r[\"_field\"] == \"value\")\n  |> filter(fn: (r) => r[\"device_name\"] == \"PI2\")\n  |> filter(fn: (r) => r[\"name\"]  == \"DS2\")\n  |> map(fn: (r) => ({ r with _value: if r._value then 1 else 0 }))\n  |> aggregateWindow(every: 5s, fn: last, createEmpty: true)\n  |> fill(column: \"_value\", value :0)",
+          "refId": "A"
+        }
+      ],
+      "title": "DS2 - PI2's Door Sensor",
       "type": "timeseries"
     }
   ],
@@ -557,7 +672,7 @@
   },
   "timepicker": {},
   "timezone": "",
-  "title": "PI1",
-  "uid": "ddaacbac-473a-4982-a690-9c22cd365de1",
-  "version": 7
+  "title": "PI2",
+  "uid": "ddaacbac-473a-4982-a690-9c22cd365de2",
+  "version": 1
 }

@@ -1,6 +1,7 @@
 import threading
 import time
 
+from shared.actuators.buzzer.component import initialize_buzzer
 from shared.actuators.door_light.component import initialize_door_light
 from shared.alarm.alarm_system import AlarmSystem
 from shared.config import load_config
@@ -21,7 +22,7 @@ if __name__ == '__main__':
 
     telgraf_client = MqttTelegrafBatchClient()
 
-    door_buzzer = initialize_door_light(config["DB"],"DB", DEVICE_NAME, telgraf_client)
+    door_buzzer = initialize_buzzer(config["DB"],"DB", DEVICE_NAME, telgraf_client)
     door_light = initialize_door_light(config["DL"],"DL", DEVICE_NAME, telgraf_client)
 
     alarm = AlarmSystem( "PI1_ALARM", DEVICE_NAME, telgraf_client, subscribers = [door_buzzer])

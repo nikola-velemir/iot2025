@@ -3,6 +3,7 @@ import threading
 from shared.actuators.stopwatch.output import TimerOutput
 from shared.logger.logger import log
 from shared.mqtt.back.receive.mqtt_back_receiver import MqttReceiver
+from shared.mqtt.influx.mqtt_telegraf_single_field_point import MqttTelegrafSingleFieldPoint
 from shared.pubsub.subscriber import Subscriber
 from shared.sensors.button.event import ButtonEvent
 
@@ -12,7 +13,7 @@ class KitchenStopwatch(Subscriber):
         self.output = output
         self.name = name
         self.device_name = device_name
-        self.mqtt_client = mqtt_client # todo ne salje nista, namestiti
+        self.mqtt_client = mqtt_client
         self.add_seconds = add_seconds
 
         self._remaining_seconds = 0
@@ -107,6 +108,8 @@ class KitchenStopwatch(Subscriber):
 
             self._remaining_seconds -= 1
 
+            self.send_tick_influx()
+
             if self._remaining_seconds <= 0:
                 self._remaining_seconds = 0
                 self._is_running = False
@@ -170,3 +173,14 @@ class KitchenStopwatch(Subscriber):
         with self._lock:
             self.add_seconds = seconds
             log(f"[{self.name}] Button press now adds {seconds}s")
+
+    def send_tick_influx(self):
+        self.mqtt_client.send(
+            MqttTelegrafSingleFieldPoint(
+                "FOUR_SD",
+                self.device_name,
+                self.name,
+                self._remaining_seconds,
+                self.output.is_simulated()
+            )
+        )

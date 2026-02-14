@@ -34,7 +34,7 @@ class Button(Publisher):
                 "Button",
                 self.device_name,
                 self.name,
-                1,
+                True,
                 self.button.is_simulated()
             )
         )

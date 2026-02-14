@@ -24,33 +24,33 @@ export class Pi3 {
       {
         name: 'IR', type: 'Infrared sensor', peripheralType: 'Sensor',
         currentState: computed(() => this.globalState.data().pi3.ir),
-        grafanaUrl: ""
+        grafanaUrl: "http://localhost:3000/d-solo/ddaacbac-473a-4982-a690-9c22cd365de3/pi3?orgId=1&timezone=browser&refresh=10s&panelId=panel-6&__feature.dashboardSceneSolo=true"
       },
       {
         name: 'DHT2', type: 'Temperature sensor', peripheralType: 'Sensor',
         currentState: computed(() => this.globalState.data().pi3.dht2),
-        grafanaUrl: ""
+        grafanaUrl: "http://localhost:3000/d-solo/ddaacbac-473a-4982-a690-9c22cd365de3/pi3?orgId=1&timezone=browser&refresh=10s&panelId=panel-8&__feature.dashboardSceneSolo=true"
       },
       {
         name: 'BGRB', type: 'Colored LED', peripheralType: 'Actuator',
         action: { 'name': "Set light color", callback: () => this.setColorOfBrgb() },
         currentState: computed(() => this.globalState.data().pi3.brgb),
-        grafanaUrl: ""
+        grafanaUrl: "http://localhost:3000/d-solo/ddaacbac-473a-4982-a690-9c22cd365de3/pi3?orgId=1&timezone=browser&refresh=10s&panelId=panel-9&__feature.dashboardSceneSolo=true"
       },
       {
         name: 'LCD', type: 'LCD display', peripheralType: 'Actuator',
         currentState: computed(() => this.globalState.data().pi3.lcd),
-        grafanaUrl: ""
+        grafanaUrl: "http://localhost:3000/d-solo/ddaacbac-473a-4982-a690-9c22cd365de3/pi3?orgId=1&timezone=browser&refresh=10s&panelId=panel-4&__feature.dashboardSceneSolo=true"
       },
       {
         name: 'DPIR3', type: 'Motion sensor', peripheralType: 'Sensor',
         currentState: computed(() => this.globalState.data().pi3.dpir3),
-        grafanaUrl: ""
+        grafanaUrl: "http://localhost:3000/d-solo/ddaacbac-473a-4982-a690-9c22cd365de3/pi3?orgId=1&timezone=browser&refresh=10s&panelId=panel-5&__feature.dashboardSceneSolo=true"
       },
       {
         name: 'DHT1', type: 'Temperature sensor', peripheralType: 'Sensor',
         currentState: computed(() => this.globalState.data().pi3.dht1),
-        grafanaUrl: ""
+        grafanaUrl: "http://localhost:3000/d-solo/ddaacbac-473a-4982-a690-9c22cd365de3/pi3?orgId=1&timezone=browser&refresh=10s&panelId=panel-7&__feature.dashboardSceneSolo=true"
       },
     ];
 

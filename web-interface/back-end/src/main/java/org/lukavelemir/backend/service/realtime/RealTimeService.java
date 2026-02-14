@@ -83,7 +83,7 @@ public class RealTimeService {
                         Boolean.parseBoolean(m.getOrDefault("pi1_ds1", "false")) ? "DOOR OPEN" : "DOOR CLOSED",
                         Boolean.parseBoolean(m.getOrDefault("pi1_dpir1", "false")) ? "MOTION DETECTED" : "NO MOTION",
                         String.format("Distance: %.2f meters", Double.parseDouble(m.getOrDefault("pi1_dus1", "0.0"))),
-                        m.getOrDefault("pi1_webc", ""), // todo webcam
+                        "CURRENT STATE CAN'T BE FOLLOWED",
                         Boolean.parseBoolean(m.getOrDefault("pi1_dl", "false")) ? "ON" : "OFF",
                         String.format("Last key pressed: %s", m.getOrDefault("pi1_dms", "none")),
                         Boolean.parseBoolean(m.getOrDefault("pi1_db", "false")) ? "ON" : "OFF"
@@ -92,8 +92,8 @@ public class RealTimeService {
                         String.format("Distance: %.2f meters", Double.parseDouble(m.getOrDefault("pi2_dus2", "0.0"))),
                         Boolean.parseBoolean(m.getOrDefault("pi2_dpir2", "false")) ? "MOTION DETECTED" : "NO MOTION",
                         Boolean.parseBoolean(m.getOrDefault("pi2_ds2", "false")) ? "DOOR OPEN" : "DOOR CLOSED",
-                        m.getOrDefault("pi2_four_sd", ""), // todo stopwatch
-                        Boolean.parseBoolean(m.getOrDefault("pi2_btn", "false")) ? "PRESSED" : "NOT PRESSED",
+                        "CURRENT STATE CAN'T BE FOLLOWED",
+                        "CURRENT STATE CAN'T BE FOLLOWED",
                         String.format(
                             "Temperature: %.2fC, Humidity: %.1f%%",
                             Double.parseDouble(m.getOrDefault("pi2_dht3_temperature", "0.0")),
