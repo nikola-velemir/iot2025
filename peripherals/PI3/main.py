@@ -19,7 +19,7 @@ if __name__ == "__main__":
     telegraf_client = MqttTelegrafBatchClient()
 
     brgb = BRGB(config["BRGB"],'PI2', telegraf_client)
-    #lcd = LcdActuator(SimulatedLcd(), config["LCD"], "PI3")
+    lcd = LcdActuator(SimulatedLcd(), config["LCD"], "PI3", telegraf_client, True)
 
 
 
