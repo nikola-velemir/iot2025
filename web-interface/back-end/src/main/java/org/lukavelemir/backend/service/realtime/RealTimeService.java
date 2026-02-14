@@ -56,7 +56,7 @@ public class RealTimeService {
                 Object value = record.getValue();
 
                 if (device != null && sensorName != null) {
-                    sensorMap.put(device + "_" + sensorName.toLowerCase(), String.valueOf(value));
+                    sensorMap.put(device.toLowerCase() + "_" + sensorName.toLowerCase(), String.valueOf(value));
                 }
             }
         }

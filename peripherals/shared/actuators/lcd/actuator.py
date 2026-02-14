@@ -49,7 +49,7 @@ class LcdActuator(Subscriber):
                             "LCD",  # promeni na tip
                             self.device_name,
                             self.name,
-                            line2,
+                            line1 + " " + line2,
                             self.is_simulated
                         )
                     )

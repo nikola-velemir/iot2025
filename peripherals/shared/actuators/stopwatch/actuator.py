@@ -12,7 +12,7 @@ class KitchenStopwatch(Subscriber):
         self.output = output
         self.name = name
         self.device_name = device_name
-        self.mqtt_client = mqtt_client
+        self.mqtt_client = mqtt_client # todo ne salje nista, namestiti
         self.add_seconds = add_seconds
 
         self._remaining_seconds = 0

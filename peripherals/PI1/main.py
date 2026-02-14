@@ -22,16 +22,16 @@ if __name__ == '__main__':
 
     telgraf_client = MqttTelegrafBatchClient()
 
-    door_buzzer = DoorBuzzerActuator(SimulatedBuzzer(), "DBZ1", "PI1", telgraf_client)
-    door_light = DoorLightActuator(SimulatedLightOutput(), "DL1", "PI1", telgraf_client)
+    door_buzzer = DoorBuzzerActuator(SimulatedBuzzer(), "DB", "PI1", telgraf_client) # todo proslediti config
+    door_light = DoorLightActuator(SimulatedLightOutput(), "DL", "PI1", telgraf_client) # todo proslediti config
 
     alarm = AlarmSystem( "PI1_ALARM", "PI1", telgraf_client, subscribers = [door_buzzer])
 
     try:
-        run_door_sensor(config['DS1'], threads, stop_event, telgraf_client, "DS1", "PI1", )
+        run_door_sensor(config['DS1'], threads, stop_event, telgraf_client, "DS1", "PI1")
         dus = run_ultrasonic_sensor(config['DUS1'], threads, stop_event, telgraf_client, "DUS1", "PI1")
-        run_motion_sensor(config['DPIR1'], threads, stop_event, telgraf_client, "DPIR1", "PI1", [dus])
-        run_keypad(config['DMS1'], threads, stop_event, telgraf_client, "DMS1", "PI1")
+        run_motion_sensor(config['DPIR1'], threads, stop_event, telgraf_client, "DPIR1", "PI1", [dus, door_light])
+        run_keypad(config['DMS'], threads, stop_event, telgraf_client, "DMS", "PI1")
 
         threading.Thread(
             target=logger_loop,

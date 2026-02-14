@@ -23,9 +23,9 @@ if __name__ == '__main__':
     stop_event = threading.Event()
     telegraf_client = MqttTelegrafBatchClient()
 
-    door_buzzer = DoorBuzzerActuator(SimulatedBuzzer(), "DBZ2", "PI2", telegraf_client)
+    door_buzzer = DoorBuzzerActuator(SimulatedBuzzer(), "DBZ2", "PI2", telegraf_client) # todo proslediti config
 
-    kitchen_stopwatch = KitchenStopwatch(SimulatedStopwatchOutput(), "4SD", "PI2", telegraf_client)
+    kitchen_stopwatch = KitchenStopwatch(SimulatedStopwatchOutput(), "FOUR_SD", "PI2", telegraf_client) # todo proslediti config
     alarm = AlarmSystem( "PI1_ALARM", "PI1", telegraf_client, subscribers = [door_buzzer])
 
     try:
