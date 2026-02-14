@@ -2,6 +2,7 @@ import threading
 import time
 
 from shared.actuators.stopwatch.actuator import KitchenStopwatch
+from shared.actuators.stopwatch.component import initialize_stopwatch
 from shared.actuators.stopwatch.output import SimulatedStopwatchOutput
 from shared.alarm.alarm_system import AlarmSystem
 from shared.config import load_config
@@ -23,8 +24,7 @@ if __name__ == '__main__':
     stop_event = threading.Event()
     telegraf_client = MqttTelegrafBatchClient()
 
-
-    kitchen_stopwatch = KitchenStopwatch(SimulatedStopwatchOutput(), "FOUR_SD", DEVICE_NAME, telegraf_client) # todo proslediti config
+    kitchen_stopwatch = initialize_stopwatch(config["FOUR_SD"], "FOUR_SD", DEVICE_NAME, telegraf_client)
     alarm = AlarmSystem( "PI1_ALARM", DEVICE_NAME, telegraf_client, subscribers=[])
 
     try:

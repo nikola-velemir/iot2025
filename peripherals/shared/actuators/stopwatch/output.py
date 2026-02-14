@@ -1,5 +1,7 @@
 from abc import ABC, abstractmethod
 
+from shared.logger.logger import log
+
 
 class TimerOutput(ABC):
     @abstractmethod
@@ -25,17 +27,17 @@ class SimulatedStopwatchOutput(TimerOutput):
     def display_time(self, minutes: int, seconds: int):
         self.current_display = f"{minutes:02d}:{seconds:02d}"
         self.is_clear = False
-        print(f"[TIMER DISPLAY] {self.current_display}")
+        log(f"[TIMER DISPLAY] {self.current_display}")
 
     def clear(self):
         self.is_clear = True
-        print(f"[TIMER DISPLAY] ----")
+        log(f"[TIMER DISPLAY] ----")
 
     def is_simulated(self) -> bool:
         return True
 
 
-class GpioTimerOutput(TimerOutput):
+class GpioStopwatchOutput(TimerOutput):
     def __init__(self, i2c_address=0x70):
         self.address = i2c_address
 
@@ -43,11 +45,11 @@ class GpioTimerOutput(TimerOutput):
     def display_time(self, minutes: int, seconds: int):
 
 
-        print(f"[GPIO TIMER] Displaying {minutes:02d}:{seconds:02d}")
+        log(f"[GPIO TIMER] Displaying {minutes:02d}:{seconds:02d}")
 
     def clear(self):
 
-        print(f"[GPIO TIMER] Display cleared")
+        log(f"[GPIO TIMER] Display cleared")
 
     def is_simulated(self) -> bool:
         return False
