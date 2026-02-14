@@ -1,8 +1,6 @@
 import threading
 import time
 
-from shared.actuators.buzzer.actuator import DoorBuzzerActuator
-from shared.actuators.buzzer.output import SimulatedBuzzer
 from shared.actuators.stopwatch.actuator import KitchenStopwatch
 from shared.actuators.stopwatch.output import SimulatedStopwatchOutput
 from shared.alarm.alarm_system import AlarmSystem
@@ -16,6 +14,8 @@ from shared.sensors.door_sensor.component import run_door_sensor
 from shared.sensors.door_ultra_sonic.component import run_ultrasonic_sensor
 from shared.sensors.gyroscope.component import run_gyro_sensor
 
+DEVICE_NAME = "PI2"
+
 if __name__ == '__main__':
     config = load_config("PI2/config.json")
     print(config)
@@ -23,18 +23,17 @@ if __name__ == '__main__':
     stop_event = threading.Event()
     telegraf_client = MqttTelegrafBatchClient()
 
-    door_buzzer = DoorBuzzerActuator(SimulatedBuzzer(), "DBZ2", "PI2", telegraf_client) # todo proslediti config
 
-    kitchen_stopwatch = KitchenStopwatch(SimulatedStopwatchOutput(), "FOUR_SD", "PI2", telegraf_client) # todo proslediti config
-    alarm = AlarmSystem( "PI1_ALARM", "PI1", telegraf_client, subscribers = [door_buzzer])
+    kitchen_stopwatch = KitchenStopwatch(SimulatedStopwatchOutput(), "FOUR_SD", DEVICE_NAME, telegraf_client) # todo proslediti config
+    alarm = AlarmSystem( "PI1_ALARM", DEVICE_NAME, telegraf_client, subscribers=[])
 
     try:
-        run_gyro_sensor(config["GYR"], threads, stop_event, telegraf_client, "GYR", "PI2")
-        dus = run_ultrasonic_sensor(config["DUS2"], threads, stop_event, telegraf_client, "DUS2", "PI2")
-        run_dht_sensor(config["DHT3"], threads,stop_event, telegraf_client,"DHT3","PI2")
-        run_door_sensor(config["DS2"], threads, stop_event, telegraf_client,"DS2","PI2")
-        run_motion_sensor(config['DPIR2'], threads, stop_event, telegraf_client, "DPIR2", "PI2", [dus])
-        run_button(config['BTN'], threads, stop_event, telegraf_client, "BTN", 'Kitchen Button', "PI2", [kitchen_stopwatch])
+        run_gyro_sensor(config["GYR"], threads, stop_event, telegraf_client, "GYR", DEVICE_NAME)
+        dus = run_ultrasonic_sensor(config["DUS2"], threads, stop_event, telegraf_client, "DUS2", DEVICE_NAME)
+        run_dht_sensor(config["DHT3"], threads,stop_event, telegraf_client,"DHT3",DEVICE_NAME)
+        run_door_sensor(config["DS2"], threads, stop_event, telegraf_client,"DS2",DEVICE_NAME)
+        run_motion_sensor(config['DPIR2'], threads, stop_event, telegraf_client, "DPIR2", DEVICE_NAME, [dus])
+        run_button(config['BTN'], threads, stop_event, telegraf_client, "BTN", 'Kitchen Button', DEVICE_NAME, [kitchen_stopwatch])
         threading.Thread(
             target=logger_loop,
             args=(stop_event,),

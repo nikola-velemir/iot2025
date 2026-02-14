@@ -7,7 +7,8 @@ from shared.pubsub.subscriber import Subscriber
 
 
 class BRGB(Subscriber):
-    def __init__(self, name, device_name, mqtt_client):
+    def __init__(self, output, name, device_name, mqtt_client):
+        self.output = output
         self.name = name
         self.telegraf_client = mqtt_client
         self.device_name = device_name
@@ -41,11 +42,11 @@ class BRGB(Subscriber):
         log(f"{self.name} turned ON")
         self.telegraf_client.send(
             MqttTelegrafPoint(
-                "BRGB",  # promeni na tip
+                "BRGB",
                 self.device_name,
                 self.name,
                 1,
-                True # todo siumulirani i pravi output
+                self.output.is_simulated()
             )
         )
 
@@ -54,10 +55,10 @@ class BRGB(Subscriber):
         log(f"🌑 {self.name} turned OFF")
         self.telegraf_client.send(
             MqttTelegrafPoint(
-                "BRGB",  # promeni na tip
+                "BRGB",
                 self.device_name,
                 self.name,
                 0,
-                True # todo siumulirani i pravi output
+                self.output.is_simulated()
             )
         )
