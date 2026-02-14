@@ -31,7 +31,7 @@ class Button(Publisher):
 
         self.mqtt_client.send(
             MqttTelegrafPoint(
-                self.full_name,
+                "Button",
                 self.device_name,
                 self.name,
                 event.is_open,
