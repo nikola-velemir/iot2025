@@ -14,19 +14,19 @@ def run_motion_sensor(config, threads, stop_event, mqtt_client, sensor_name, dev
 
     if not config['simulated']:
         log("Starting DPIR1 sensor")
-        motion_sensor = DoorMotionSensor(GpioMotionInput(config['pin']), sensor_name, device_name, mqtt_client)
+        motion_sensor = DoorMotionSensor(GpioMotionInput(config['pins']['pir_pin']), sensor_name, device_name, mqtt_client)
     else:
         log("Starting DPIR1 simulator")
         motion_sensor = DoorMotionSensor(SimulatedMotionInput(), sensor_name, device_name, mqtt_client)
 
     motion_sensor.subscribe_multiple(subscribers)
 
-    poll_interval = config.get('poll_interval', 15.0)
+    polling_interval = config['poll_time']
 
     poller_thread = threading.Thread(
         name="Motion-poller",
         target=run_motion_sensor_polling,
-        args=(motion_sensor, stop_event, poll_interval),
+        args=(motion_sensor, stop_event, polling_interval),
         daemon=True
     )
 

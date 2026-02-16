@@ -18,6 +18,7 @@ class DoorBuzzerActuator(Subscriber):
             self.buzzer.on()
             is_on = True
         if isinstance(event, AlarmDeactivated):
+            print("Sent to deactivate")
             self.buzzer.off()
             is_on = False
 

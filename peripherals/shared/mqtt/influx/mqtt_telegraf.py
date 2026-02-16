@@ -7,7 +7,7 @@ import paho.mqtt.client as mqtt
 from shared.mqtt.influx.mqtt_telegraf_point import MqttTelegrafPoint
 from shared.mqtt.influx.mqtt_telegraf_single_field_point import MqttTelegrafSingleFieldPoint
 
-BROKER = "localhost"
+BROKER = "192.168.0.3"
 PORT = 1883
 TOPIC = "test/topic"
 

@@ -18,7 +18,7 @@ def run_door_sensor(config, threads, stop_event, mqtt_client, sensor_name, devic
 
     if not config['simulated']:
         log("Starting DS1 sensor")
-        door_sensor = DoorSensor(GpioButton(config['pin']), sensor_name, device_name, mqtt_client)
+        door_sensor = DoorSensor(GpioButton(config['pins']['btn_pin']), sensor_name, device_name, mqtt_client)
     else:
         log("Starting DS1 simulator")
         door_sensor = DoorSensor(SimulatedButton(), sensor_name, device_name, mqtt_client)
@@ -33,10 +33,11 @@ def run_door_sensor(config, threads, stop_event, mqtt_client, sensor_name, devic
     for sub in subscribers:
         door_sensor.subscribe(sub)
 
+    polling_interval = config['poll_time']
     poller_thread = threading.Thread(
         name="DS1-poller",
         target=run_door_sensor_polling,
-        args=(door_sensor, stop_event),
+        args=(door_sensor, stop_event,polling_interval),
         daemon=True
     )
 

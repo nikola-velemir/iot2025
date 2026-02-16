@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
-
+import RPi.GPIO as GPIO
+import time
 
 class LightOutput(ABC):
     @abstractmethod
@@ -22,6 +23,7 @@ class SimulatedLightOutput(LightOutput):
     def __init__(self):
         self._light = False
 
+
     def turn_on(self):
         self._light = True
 
@@ -39,14 +41,16 @@ class GpioLightOutput(LightOutput):
     def __init__(self, gpio_pin):
         self.gpio_pin = gpio_pin
         self._light = False
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(self.gpio_pin,GPIO.OUT)
 
     def turn_on(self):
-        # todo gpio turn on light
-        pass
+        self._light = True
+        GPIO.output(self.gpio_pin,GPIO.HIGH)
 
     def turn_off(self):
-        # todo gpio turn off light
-        pass
+        self._light = False
+        GPIO.output(self.gpio_pin, GPIO.LOW)
 
     def is_light(self) -> bool:
         return self._light

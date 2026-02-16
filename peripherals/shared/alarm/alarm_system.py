@@ -25,10 +25,12 @@ class AlarmSystem(Publisher):
         self._receive_client.start()
 
     def message_cb(self, topic, msg):
-        if "ACTIVATE_ALARM" in msg:
-            self.notify(AlarmActivated())
-        elif "DEACTIVATE_ALARM" in msg:
+        print(msg)
+
+        if "DEACTIVATE_ALARM" in msg:
             self.notify(AlarmDeactivated())
+        elif "ACTIVATE_ALARM" in msg:
+            self.notify(AlarmActivated())
     def _arm_system(self):
         with self._lock:
             self.is_armed = True
