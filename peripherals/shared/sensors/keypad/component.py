@@ -31,7 +31,7 @@ def run_keypad(config, threads, stop_event, mqtt_client, sensor_name, device_nam
     for sub in subscribers:
         keypad_sensor.subscribe(sub)
 
-    poll_interval = config.get("poll_interval", 0.1)
+    poll_interval = config.get("poll_time", 0.1)
 
     poller_thread = threading.Thread(
         name="KEYPAD-poller",

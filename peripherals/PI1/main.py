@@ -28,7 +28,7 @@ if __name__ == '__main__':
     alarm = AlarmSystem( "PI1_ALARM", DEVICE_NAME, telgraf_client, subscribers = [door_buzzer])
 
     try:
-        run_door_sensor(config['DS1'], threads, stop_event, telgraf_client, "DS1", DEVICE_NAME)
+        #run_door_sensor(config['DS1'], threads, stop_event, telgraf_client, "DS1", DEVICE_NAME)
         dus = run_ultrasonic_sensor(config['DUS1'], threads, stop_event, telgraf_client, "DUS1", DEVICE_NAME)
         run_motion_sensor(config['DPIR1'], threads, stop_event, telgraf_client, "DPIR1", DEVICE_NAME, [dus, door_light])
         run_keypad(config['DMS'], threads, stop_event, telgraf_client, "DMS", DEVICE_NAME)

@@ -1,5 +1,8 @@
 from abc import ABC, abstractmethod
 
+from RPi import GPIO
+
+
 class ButtonInput(ABC):
     @abstractmethod
     def is_pressed(self) -> bool:
@@ -12,6 +15,7 @@ class ButtonInput(ABC):
 class SimulatedButton(ButtonInput):
     def __init__(self):
         self._pressed = False
+
 
     def press(self):
         self._pressed = True
@@ -29,10 +33,12 @@ class GpioButton(ButtonInput):
     def __init__(self, gpio_pin):
         self.gpio_pin = gpio_pin
         self._pressed = False
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(self.gpio_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
     def is_pressed(self)->bool:
         # todo check if pressed using gpio pin
-        pass
+        return GPIO.input(self.gpio_pin) == GPIO.LOW
 
     def is_simulated(self) -> bool:
         return False

@@ -1,6 +1,9 @@
 from abc import ABC, abstractmethod
 import random
 
+from RPi import GPIO
+
+
 class MotionInput(ABC):
     @abstractmethod
     def is_motion(self) -> bool:
@@ -25,10 +28,12 @@ class GpioMotionInput(MotionInput):
     def __init__(self, gpio_pin):
         self.gpio_pin = gpio_pin
         self._motion = False
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(self.gpio_pin, GPIO.IN)
 
     def is_motion(self) -> bool:
-        # todo check if motion using gpio pin
-        pass
+        return GPIO.input(self.gpio_pin) == GPIO.HIGH
+
 
     def is_simulated(self) -> bool:
         return False

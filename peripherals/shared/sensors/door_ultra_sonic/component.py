@@ -14,11 +14,12 @@ def run_ultrasonic_sensor(config, threads, stop_event, mqtt_client, sensor_name,
 
     if not config['simulated']:
         log("Starting DUS1 sensor")
-        ultrasonic_sensor = UltrasonicSensor(GpioUltrasonicInput(config['pin']), sensor_name, device_name, mqtt_client)
+        trigger_pin ,echo_pin = config['pins']['trigger_pin'], config['pins']['echo_pin']
+        ultrasonic_sensor = UltrasonicSensor(GpioUltrasonicInput(trigger_pin, echo_pin), sensor_name, device_name, mqtt_client)
     else:
         log("Starting DUS1 simulator")
 
-    interval = config.get('poll_interval', 0.5)
+    interval = config.get('poll_time', 0.5)
 
     poller_thread = threading.Thread(
         name="US1-poller",

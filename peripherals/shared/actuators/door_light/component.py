@@ -5,7 +5,7 @@ from shared.actuators.door_light.output import SimulatedLightOutput, GpioLightOu
 def initialize_door_light(config, actuator_name, device_name, telgraf_client):
     actuator_output = SimulatedLightOutput()
     if not config["simulated"]:
-        actuator_output = GpioLightOutput(-1) #menjace se radi gpio koda
+        actuator_output = GpioLightOutput(config["pins"]["led_pin"]) #menjace se radi gpio koda
     door_light = DoorLightActuator(
         actuator_output,
         actuator_name,
