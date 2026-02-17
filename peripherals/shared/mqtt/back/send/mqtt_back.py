@@ -10,7 +10,7 @@ from shared.mqtt.back.send.alarm.mqtt_back_alarm_gyro_payload import MqttBackAla
 from shared.mqtt.back.send.alarm.mqtt_back_alarm_motion_payload import MqttBackAlarmMotionPayload
 from shared.mqtt.back.send.mqtt_back_send_payload import MqttBackSendPayload
 
-BROKER = "192.168.0.3"
+BROKER = "192.168.0.5"
 PORT = 1883
 TOPIC = "test/topic"
 

@@ -10,21 +10,22 @@ class Button(Publisher):
     def __init__(self, button: ButtonInput, full_name, name, device_name, mqtt_client):
         super().__init__()
         self.button = button
-        self._last_state = None
+        self._last_state = False  # start as not pressed
         self.name = name
         self.full_name = full_name
         self.device_name = device_name
         self.mqtt_client: MqttTelegrafBatchClient = mqtt_client
 
     def poll(self):
-        is_closed = self.button.is_pressed()
-        is_open = not is_closed
+        is_pressed = self.button.is_pressed()  # True if pressed
 
-        if is_open != self._last_state:
-            self._last_state = is_open
-
+        # Trigger only when transitioning from not pressed → pressed
+        if is_pressed and not self._last_state:
+            self._last_state = True  # update state
             event = ButtonEvent("PRESSED")
             self.on_state_change(event)
+        elif not is_pressed:
+            self._last_state = False  # update when released
 
     def on_state_change(self, event: ButtonEvent):
         log(f"{self.full_name} is pressed")

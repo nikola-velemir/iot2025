@@ -1,4 +1,6 @@
 from abc import ABC, abstractmethod
+import board
+import adafruit_dht
 
 
 class DHTInput(ABC):
@@ -27,14 +29,18 @@ class SimulatedDHT(DHTInput):
     def is_simulated(self) -> bool:
         return True
 
-
 class GpioDHT(DHTInput):
-    def __init__(self, gpio_pin):
-        self.pin = gpio_pin
+    def __init__(self, gpio_pin: int):
+        self._sensor = adafruit_dht.DHT11(getattr(board, f"D{gpio_pin}"))
 
     def read_data(self):
-        # Todo: Implementation for physical sensor
-        return 22.0, 45.0
+        temperature = self._sensor.temperature
+        humidity = self._sensor.humidity
+
+        if temperature is None or humidity is None:
+            raise IOError("Failed to read DHT11")
+
+        return temperature, humidity
 
     def is_simulated(self) -> bool:
         return False

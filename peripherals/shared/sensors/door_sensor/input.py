@@ -37,7 +37,6 @@ class GpioButton(ButtonInput):
         GPIO.setup(self.gpio_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
 
     def is_pressed(self)->bool:
-        # todo check if pressed using gpio pin
         return GPIO.input(self.gpio_pin) == GPIO.LOW
 
     def is_simulated(self) -> bool:

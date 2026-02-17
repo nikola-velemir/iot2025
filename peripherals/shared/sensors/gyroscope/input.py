@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 
+from .MPU6050 import MPU6050
 
 class GyroscopeInput(ABC):
     @abstractmethod
@@ -29,11 +30,15 @@ class SimulatedGyroscope(GyroscopeInput):
 class GpioGyroscope(GyroscopeInput):
     def __init__(self, i2c_address=0x68):
         self.address = i2c_address
+        self._mpu = MPU6050(i2c_address)
+        self._mpu.dmp_initialize()
         # Initialize I2C connection for MPU6050 or similar
 
     def read_gyro_data(self):
-        # Todo: Read from I2C bus
-        return 0.1, -0.05, 0.02
-
+        gyro = self._mpu.get_rotation()   # returns (x, y, z)
+        print(gyro)
+        return gyro
+    def read_accel_data(self):
+        return self._mpu.get_acceleration()  # optional
     def is_simulated(self) -> bool:
         return False

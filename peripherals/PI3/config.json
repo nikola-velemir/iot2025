@@ -4,10 +4,7 @@
     "description": "DHT",
     "simulated": true,
     "pins": {
-      "a": 15,
-      "b": 14,
-      "c": 13,
-      "d": 12
+
     }
   },
   "DHT2": {
@@ -22,12 +19,10 @@
   },
   "IR": {
     "description": "Infra Red",
-    "simulated": true,
+    "simulated": false,
+    "poll_time": 0.05,
     "pins": {
-      "a": 18,
-      "b": 19,
-      "c": 21,
-      "d": 20
+      "ir_pin": 14
     }
   },
   "BRGB": {

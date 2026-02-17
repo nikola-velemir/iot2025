@@ -22,10 +22,10 @@ if __name__ == "__main__":
     lcd = initialize_lcd(config["LCD"],"LCD", DEVICE_NAME, telegraf_client)
 
     try:
-        run_dht_sensor(config["DHT2"], threads,stop_event, telegraf_client,"DHT2",DEVICE_NAME, subscribers=[lcd])
-        run_dht_sensor(config["DHT1"], threads,stop_event, telegraf_client,"DHT1",DEVICE_NAME, subscribers=[lcd])
-        run_ir_sensor(config["IR"], threads, stop_event, telegraf_client, "IR", DEVICE_NAME, subscribers=[brgb])
-        run_motion_sensor(config["DPIR3"], threads, stop_event, telegraf_client, "DPIR3", DEVICE_NAME)
+        #run_dht_sensor(config["DHT2"], threads,stop_event, telegraf_client,"DHT2",DEVICE_NAME, subscribers=[lcd])
+        #run_dht_sensor(config["DHT1"], threads,stop_event, telegraf_client,"DHT1",DEVICE_NAME, subscribers=[lcd])
+        run_ir_sensor(config["IR"], threads, stop_event, telegraf_client, "IR", DEVICE_NAME, subscribers=[])
+        #run_motion_sensor(config["DPIR3"], threads, stop_event, telegraf_client, "DPIR3", DEVICE_NAME)
         threading.Thread(
             target=logger_loop,
             args=(stop_event,),
