@@ -2,6 +2,7 @@ import datetime
 import random
 import time
 from abc import abstractmethod, ABC
+from collections import deque
 
 from RPi import GPIO
 
@@ -39,64 +40,75 @@ ButtonsNames = ["LEFT", "RIGHT", "UP", "DOWN", "2", "3", "1", "OK", "4", "5", "6
 class GpioIR(IRInput):
     def __init__(self, gpio_pin):
         self._ir_pin = gpio_pin
+        self._last_time = 0
+        self._durations = deque()
+        self._last_code = None
+
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(self._ir_pin, GPIO.IN)
+        GPIO.setup(self._ir_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
+        GPIO.remove_event_detect(self._ir_pin)  # prevent "already registered" error
 
-    def read_key(self) -> str | None:
-        binary_str = self._get_binary()
-        if not binary_str:
-            return None
-        in_data = self._convert_hex(binary_str)
-
-        for button, code in zip(ButtonsNames, Buttons):
-            if in_data == hex(code):
-                return button
-        return None
+        GPIO.add_event_detect(
+            self._ir_pin,
+            GPIO.BOTH,
+            callback=self._edge_callback
+        )
 
     def is_simulated(self) -> bool:
         return False
 
-    def _get_binary(self) -> str | None:
-        """Reads raw IR pulses and converts them to a binary string."""
-        command = []
-        previous_value = GPIO.input(self._ir_pin)
+    def read_key(self) -> str | None:
+        if self._last_code:
+            code = self._last_code
+            self._last_code = None
+            return code
+        return None
 
-        # Wait for pin to go low (start of IR pulse)
-        while previous_value:
-            time.sleep(0.001)
-            previous_value = GPIO.input(self._ir_pin)
+    def _edge_callback(self, channel):
+        now = time.perf_counter()
+        duration = (now - self._last_time) * 1_000_000
+        self._last_time = now
 
-        start_time = datetime.now()
-        num_ones = 0
+        if duration > 15000:
+            self._durations.clear()
+            return
 
-        while True:
-            value = GPIO.input(self._ir_pin)
-            if value != previous_value:
-                now = datetime.now()
-                pulse_time = (now - start_time).total_seconds() * 1_000_000  # microseconds
-                start_time = now
-                command.append((previous_value, int(pulse_time)))
+        self._durations.append(duration)
 
-            if value:
-                num_ones += 1
-            else:
-                num_ones = 0
+        if len(self._durations) >= 68:
+            self._decode()
 
-            if num_ones > 10000:
+    def _decode(self):
+        pulses = list(self._durations)[4:]  # skip leader (4 edges)
+        bits = ""
+
+        for i in range(0, 64, 2):
+            if i + 1 >= len(pulses):
                 break
+            space = pulses[i + 1]
+            if 400 < space < 800:
+                bits += "0"
+            elif 1400 < space < 1800:
+                bits += "1"
 
-            previous_value = value
+        self._durations.clear()
 
-        # Convert pulses to binary string
-        binary_str = ""
-        for val, duration in command:
-            if val == 1:  # Rest period
-                binary_str += "1" if duration > 1000 else "0"
+        if len(bits) != 32:
+            return
 
-        if len(binary_str) > 34:
-            binary_str = binary_str[:34]
+        numeric = int(bits, 2)
 
-        return binary_str or None
+        mapping = {
+            0xff30cf: "4",
+            0xff18e7: "5",
+            0xff7a85: "6",
+            0xff10ef: "7",
+            0xff38c7: "8",
+            0xff5aa5: "9",
+            0xff42bd: "*",
+            0xff4ab5: "0",
+            0xff52ad: "#",
+        }
 
-    def _convert_hex(self, binary_str: str) -> str:
-        return hex(int(binary_str, 2))
+        if numeric in mapping:
+            self._last_code = mapping[numeric]

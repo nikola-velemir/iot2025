@@ -35,19 +35,19 @@ def run_ir_sensor(config, threads, stop_event, mqtt_client, sensor_name, device_
         sim_thread.start()
         threads.append(sim_thread)
 
-    poll_time = config.get("poll_time",0.05)
-    def poller():
-        log(f"{sensor_name} poller started.")
-        while not stop_event.is_set():
-            ir_sensor.poll()
-            time.sleep(config.get('interval', poll_time))
-
-    poller_thread = threading.Thread(
-        name=f"{sensor_name}-poller",
-        target=poller,
-        daemon=True
-    )
-    poller_thread.start()
-    threads.append(poller_thread)
+    # poll_time = config.get("poll_time",0.05)
+    # def poller():
+    #     log(f"{sensor_name} poller started.")
+    #     while not stop_event.is_set():
+    #         ir_sensor.poll()
+    #         time.sleep(0.0005)
+    #
+    # poller_thread = threading.Thread(
+    #     name=f"{sensor_name}-poller",
+    #     target=poller,
+    #     daemon=True
+    # )
+    # poller_thread.start()
+    # threads.append(poller_thread)
 
     log(f"{sensor_name} started successfully")

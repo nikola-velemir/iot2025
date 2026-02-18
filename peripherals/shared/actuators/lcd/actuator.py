@@ -11,6 +11,7 @@ class LcdActuator(Subscriber):
         self.output = lcd
         self.name = name
         self.device_name = device_name
+        self._last_render = None
 
         self.telegraf_client = mqtt_client
         self.sensor_data = {}
@@ -28,31 +29,37 @@ class LcdActuator(Subscriber):
 
     def _rotation_loop(self):
         while True:
-            sensors = list(self.sensor_data.keys())
-            if not sensors:
-                self.output.display_text("Waiting for", "sensor data...")
+            with self._lock:
+                snapshot = dict(self.sensor_data)
+
+            if not snapshot:
+                self._render_if_changed("Waiting for", "sensor data...")
                 time.sleep(2)
                 continue
 
-            for sensor_id in sensors:
-                with self._lock:
-                    data = self.sensor_data.get(sensor_id)
+            for sensor_id, data in snapshot.items():
+                line1 = f"Sensor: {sensor_id}"
+                line2 = f"T:{data['temp']}C H:{data['hum']}%"
 
-                if data:
-                    line1 = f"Sensor: {sensor_id}"
-                    line2 = f"T:{data['temp']}C H:{data['hum']}%"
-                    self.output.display_text(line1, line2)
+                self._render_if_changed(line1, line2)
 
-                    self.telegraf_client.send(
-                        MqttTelegrafSingleFieldPoint(
-                            "LCD",
-                            self.device_name,
-                            self.name,
-                            line1 + " " + line2,
-                            self.output.is_simulated()
-                        )
+                self.telegraf_client.send(
+                    MqttTelegrafSingleFieldPoint(
+                        "LCD",
+                        self.device_name,
+                        self.name,
+                        line1 + " " + line2,
+                        self.output.is_simulated()
                     )
+                )
+
                 time.sleep(5)
+
+    def _render_if_changed(self, line1, line2):
+        content = (line1, line2)
+        if content != self._last_render:
+            self.output.display_text(line1, line2)
+            self._last_render = content
 
     def on_state_change(self, message: str):
         pass

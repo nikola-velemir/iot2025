@@ -5,6 +5,7 @@ from shared.actuators.brgb.output import SimulatedBRGBOutput, GpioBRGBOutput
 def initialize_brgb(config, actuator_name, device_name, telegraf_client):
     output = SimulatedBRGBOutput(actuator_name)
     if not config["simulated"]:
-        output = GpioBRGBOutput(actuator_name, -1, -2, -3)
+        pins = config["pins"]
+        output = GpioBRGBOutput(actuator_name, pins["red_pin"], pins["green_pin"], pins["blue_pin"])
     brgb = BRGB(output, actuator_name, device_name, telegraf_client)
     return brgb
