@@ -56,7 +56,7 @@ export class Pi3 {
 
     setColorOfBrgb = async () => {
       const dialogRef: MatDialogRef<LightColorDialog, string | null | undefined> = this.dialog.open(LightColorDialog, {
-        height: '250px',
+        height: '300px',
       });
 
       const result = await firstValueFrom(dialogRef.afterClosed());
