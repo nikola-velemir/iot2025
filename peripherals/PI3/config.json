@@ -15,7 +15,7 @@
   },
   "IR": {
     "description": "Infra Red",
-    "simulated": true,
+    "simulated": false,
     "poll_time": 0.05,
     "pins": {
       "ir_pin": 16
@@ -37,7 +37,7 @@
   },
   "LCD": {
     "description": "LCD",
-    "simulated": false,
+    "simulated": true,
     "address": 39,
     "pins": {
 

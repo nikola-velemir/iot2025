@@ -30,9 +30,6 @@ class MqttReceiver:
     def on_message(self, client, userdata, msg):
         try:
             payload = msg.payload.decode("utf-8")
-            print(f"New Message Received")
-            print(f"Topic: {msg.topic}")
-            print(f"Payload: {payload}")
             # Call the custom callback if provided
             if self.message_callback:
                 self.message_callback(msg.topic, payload)

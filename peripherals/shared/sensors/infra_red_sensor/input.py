@@ -1,9 +1,6 @@
-import datetime
 import random
-import time
 from abc import abstractmethod, ABC
-from collections import deque
-
+import time
 from RPi import GPIO
 
 
@@ -37,78 +34,77 @@ Buttons = [0x300ff22dd, 0x300ffc23d, 0x300ff629d, 0x300ffa857, 0x300ff9867, 0x30
 ButtonsNames = ["LEFT", "RIGHT", "UP", "DOWN", "2", "3", "1", "OK", "4", "5", "6", "7", "8", "9", "*", "0",
                 "#"]  # String list in same order as HEX list
 
+
+
 class GpioIR(IRInput):
     def __init__(self, gpio_pin):
-        self._ir_pin = gpio_pin
-        self._last_time = 0
-        self._durations = deque()
-        self._last_code = None
-
+        self._ir_pin = int(gpio_pin)
         GPIO.setmode(GPIO.BCM)
-        GPIO.setup(self._ir_pin, GPIO.IN, pull_up_down=GPIO.PUD_UP)
-        GPIO.remove_event_detect(self._ir_pin)  # prevent "already registered" error
-
-        GPIO.add_event_detect(
-            self._ir_pin,
-            GPIO.BOTH,
-            callback=self._edge_callback
-        )
+        GPIO.setup(self._ir_pin, GPIO.IN)
+        self._last_code = None
 
     def is_simulated(self) -> bool:
         return False
 
     def read_key(self) -> str | None:
-        if self._last_code:
-            code = self._last_code
-            self._last_code = None
-            return code
-        return None
+        # 1. Wait for a signal (Pin goes LOW)
+        # We don't want to block forever, so we check and return if nothing is there
+        if GPIO.input(self._ir_pin) == GPIO.HIGH:
+            return None
 
-    def _edge_callback(self, channel):
-        now = time.perf_counter()
-        duration = (now - self._last_time) * 1_000_000
-        self._last_time = now
+        # 2. If we are here, a signal started! Capture pulses.
+        command_pulses = []
+        start_time = time.perf_counter()
+        last_state = GPIO.LOW
 
-        if duration > 15000:
-            self._durations.clear()
-            return
+        # Timeout after 0.2s to prevent infinite loops if signal is messy
+        timeout_start = time.perf_counter()
 
-        self._durations.append(duration)
+        while (time.perf_counter() - timeout_start) < 0.2:
+            current_state = GPIO.input(self._ir_pin)
+            if current_state != last_state:
+                now = time.perf_counter()
+                pulse_duration = (now - start_time) * 1_000_000
+                command_pulses.append((last_state, pulse_duration))
+                start_time = now
+                last_state = current_state
 
-        if len(self._durations) >= 68:
-            self._decode()
-
-    def _decode(self):
-        pulses = list(self._durations)[4:]  # skip leader (4 edges)
-        bits = ""
-
-        for i in range(0, 64, 2):
-            if i + 1 >= len(pulses):
+            # If the pin stays HIGH for a long time, the transmission is over
+            if current_state == GPIO.HIGH and (time.perf_counter() - start_time) > 0.05:
                 break
-            space = pulses[i + 1]
-            if 400 < space < 800:
-                bits += "0"
-            elif 1400 < space < 1800:
-                bits += "1"
 
-        self._durations.clear()
+        return self._decode_raw(command_pulses)
 
-        if len(bits) != 32:
-            return
+    def _decode_raw(self, pulses) -> str | None:
+        # 1. The working script starts with '1'
+        binary_str = "1"
 
-        numeric = int(bits, 2)
+        # 2. The working script ONLY looks at the 'rest' periods (state == 1 / HIGH)
+        for state, duration in pulses:
+            if state == GPIO.HIGH:
+                if duration > 1000:
+                    binary_str += "1"
+                else:
+                    binary_str += "0"
 
-        mapping = {
-            0xff30cf: "4",
-            0xff18e7: "5",
-            0xff7a85: "6",
-            0xff10ef: "7",
-            0xff38c7: "8",
-            0xff5aa5: "9",
-            0xff42bd: "*",
-            0xff4ab5: "0",
-            0xff52ad: "#",
-        }
+        # 3. The working script truncates specifically at 34 characters
+        if len(binary_str) > 34:
+            binary_str = binary_str[:34]
 
-        if numeric in mapping:
-            self._last_code = mapping[numeric]
+        # DEBUG: Uncomment this to see the hex your remote is actually sending
+        # print(f"Captured Hex: {hex(int(binary_str, 2))}")
+
+        try:
+            # 4. Convert to integer using base 2
+            numeric_val = int(binary_str, 2)
+
+            # 5. Use the specific HEX values from your Buttons list
+            # Note: numeric_val is an int, Buttons is a list of ints.
+            for i in range(len(Buttons)):
+                if Buttons[i] == numeric_val:
+                    return ButtonsNames[i]
+
+        except Exception as e:
+            print(f"Logic Error: {e}")
+
+        return None

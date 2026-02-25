@@ -28,12 +28,12 @@ if __name__ == '__main__':
     alarm = AlarmSystem( "PI1_ALARM", DEVICE_NAME, telegraf_client, subscribers=[])
 
     try:
-        #run_gyro_sensor(config["GYR"], threads, stop_event, telegraf_client, "GYR", DEVICE_NAME)
+        run_gyro_sensor(config["GYR"], threads, stop_event, telegraf_client, "GYR", DEVICE_NAME)
         #dus = run_ultrasonic_sensor(config["DUS2"], threads, stop_event, telegraf_client, "DUS2", DEVICE_NAME)
         #run_dht_sensor(config["DHT3"], threads,stop_event, telegraf_client,"DHT3",DEVICE_NAME)
         #run_door_sensor(config["DS2"], threads, stop_event, telegraf_client,"DS2",DEVICE_NAME)
         #run_motion_sensor(config['DPIR2'], threads, stop_event, telegraf_client, "DPIR2", DEVICE_NAME, [dus])
-        run_button(config['BTN'], threads, stop_event, telegraf_client, "BTN", 'Kitchen Button', DEVICE_NAME, [kitchen_stopwatch])
+        #run_button(config['BTN'], threads, stop_event, telegraf_client, "BTN", 'Kitchen Button', DEVICE_NAME, [kitchen_stopwatch])
         threading.Thread(
             target=logger_loop,
             args=(stop_event,),

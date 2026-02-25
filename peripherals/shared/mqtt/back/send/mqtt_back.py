@@ -65,7 +65,7 @@ class MqttBackBatchClient:
             payload = json.dumps(data_point.get_payload_as_dict())
             self.client.publish(dynamic_topic, payload=payload, qos=1)
 
-        print(f"Flushed {len(batch)} points to their respective topics (back end).")
+        #print(f"Flushed {len(batch)} points to their respective topics (back end).")
 
     def stop(self):
         self.running = False

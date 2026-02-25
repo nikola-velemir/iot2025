@@ -16,16 +16,16 @@
   },
   "DUS1": {
     "description": "Door Ultrasonic Sensor",
-    "simulated": true,
+    "simulated": false,
     "poll_time": 0.2,
     "pins": {
-      "trigger_pin":27,
-      "echo_pin": 22
+      "trigger_pin":4,
+      "echo_pin": 17
     }
   },
   "DB": {
     "description": "Door Buzzer",
-    "simulated": false,
+    "simulated": true,
     "frequency": 200,
     "duty_cycle": 50,
     "pins": {
@@ -42,10 +42,10 @@
   },
   "DMS": {
     "description": "Door Membrane Switch",
-    "simulated": false,
+    "simulated": true,
     "poll_time": 0.1,
     "pins": {
-      "R1": 17,
+      "R1": 28,
       "R2": 8,
       "R3": 7,
       "R4": 1,

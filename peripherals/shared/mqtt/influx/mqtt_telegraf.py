@@ -72,7 +72,7 @@ class MqttTelegrafBatchClient:
 
             self.client.publish(dynamic_topic, payload=payload_string, qos=1)
 
-        print(f"Flushed {len(batch)} points to their respective topics.")
+        #print(f"Flushed {len(batch)} points to their respective topics.")
 
     def stop(self):
         self.running = False

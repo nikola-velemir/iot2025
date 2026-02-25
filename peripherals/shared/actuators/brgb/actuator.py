@@ -39,17 +39,17 @@ class BRGB(Subscriber):
        self._handle_color_change(event)
 
     def set_color(self, color):
-        self.current_color = color
+        self._current_color = color
         log(f"{self.name} changed color to {color}")
         self.output.set_color(color)
 
     def turn_on(self):
         self.output.turn_on()
-        self.current_color = "WHITE"
+        self._current_color = "WHITE"
         self.set_color("WHITE")
         log(f"{self.name} turned ON")
         self._is_on = True
-        self.telegraf_client.send(
+        self._telegraf_client.send(
             MqttTelegrafSingleFieldPoint(
                 "BRGB",
                 self.device_name,
@@ -61,10 +61,10 @@ class BRGB(Subscriber):
 
     def turn_off(self):
         self.output.turn_off()
-        self.current_color = "OFF"
+        self._current_color = "OFF"
         self._is_on = False
         log(f"🌑 {self.name} turned OFF")
-        self.telegraf_client.send(
+        self._telegraf_client.send(
             MqttTelegrafSingleFieldPoint(
                 "BRGB",
                 self.device_name,
