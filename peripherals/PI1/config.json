@@ -1,7 +1,7 @@
 {
   "DS1": {
     "description": "Door Sensor (Button)",
-    "simulated": true,
+    "simulated": false,
     "poll_time": 0.1,
     "pins": {
       "btn_pin": 23
@@ -19,8 +19,8 @@
     "simulated": true,
     "poll_time": 0.2,
     "pins": {
-      "trigger_pin":27,
-      "echo_pin": 22
+      "trigger_pin":4,
+      "echo_pin": 17
     }
   },
   "DB": {
@@ -34,7 +34,7 @@
   },
   "DPIR1": {
     "description": "Door Motion Sensor",
-    "simulated": true,
+    "simulated": false,
     "poll_time": 0.1,
     "pins": {
       "pir_pin": 25
@@ -42,10 +42,10 @@
   },
   "DMS": {
     "description": "Door Membrane Switch",
-    "simulated": false,
+    "simulated": true,
     "poll_time": 0.1,
     "pins": {
-      "R1": 17,
+      "R1": 28,
       "R2": 8,
       "R3": 7,
       "R4": 1,

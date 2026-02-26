@@ -10,7 +10,7 @@ from shared.mqtt.back.send.alarm.mqtt_back_alarm_gyro_payload import MqttBackAla
 from shared.mqtt.back.send.alarm.mqtt_back_alarm_motion_payload import MqttBackAlarmMotionPayload
 from shared.mqtt.back.send.mqtt_back_send_payload import MqttBackSendPayload
 
-BROKER = "192.168.0.3"
+BROKER = "192.168.0.5"
 PORT = 1883
 TOPIC = "test/topic"
 
@@ -65,7 +65,7 @@ class MqttBackBatchClient:
             payload = json.dumps(data_point.get_payload_as_dict())
             self.client.publish(dynamic_topic, payload=payload, qos=1)
 
-        print(f"Flushed {len(batch)} points to their respective topics (back end).")
+        #print(f"Flushed {len(batch)} points to their respective topics (back end).")
 
     def stop(self):
         self.running = False

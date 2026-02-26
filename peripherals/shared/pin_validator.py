@@ -11,9 +11,14 @@ def validated(func):
                 raise ValueError("You have not specified some pins")
 
             for pin in pins:
-                if pin in presence_set:
-                    raise ValueError("Some pins repeat in your config")
-                presence_set.add(pin)
-
+                if isinstance(pin,int):
+                    if pin in presence_set:
+                        raise ValueError("Some pins repeat in your config")
+                    presence_set.add(pin)
+                if isinstance(pin,list):
+                    for p in pin:
+                        if p in presence_set:
+                            raise ValueError("Some pins repeat in your config")
+                        presence_set.add(p)
         return result
     return wrapper

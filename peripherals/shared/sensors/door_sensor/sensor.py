@@ -2,6 +2,7 @@ import threading
 
 from shared.logger.logger import log
 from shared.mqtt.back.send.alarm.mqtt_back_alarm_open_for_too_long import MqttBackAlarmOpenForTooLongPayload
+from shared.mqtt.back.send.alarm.mqtt_back_door_closed_after_activation import MqttBackDoorClosedAfterActivation
 from shared.mqtt.back.send.mqtt_back import MqttBackBatchClient
 from shared.mqtt.influx.mqtt_telegraf import MqttTelegrafBatchClient
 from shared.mqtt.influx.mqtt_telegraf_single_field_point import MqttTelegrafSingleFieldPoint
@@ -49,6 +50,7 @@ class DoorSensor(Publisher):
                 self._start_monitoring()
             else:
                 self._stop_monitoring()
+                self.mqtt_send_client.send(MqttBackDoorClosedAfterActivation())
 
         self.notify(event)
 

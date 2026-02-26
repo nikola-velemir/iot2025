@@ -7,7 +7,7 @@ import paho.mqtt.client as mqtt
 from shared.mqtt.influx.mqtt_telegraf_point import MqttTelegrafPoint
 from shared.mqtt.influx.mqtt_telegraf_single_field_point import MqttTelegrafSingleFieldPoint
 
-BROKER = "192.168.0.3"
+BROKER = "192.168.0.5"
 PORT = 1883
 TOPIC = "test/topic"
 
@@ -72,7 +72,7 @@ class MqttTelegrafBatchClient:
 
             self.client.publish(dynamic_topic, payload=payload_string, qos=1)
 
-        print(f"Flushed {len(batch)} points to their respective topics.")
+        #print(f"Flushed {len(batch)} points to their respective topics.")
 
     def stop(self):
         self.running = False

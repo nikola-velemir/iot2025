@@ -1,3 +1,5 @@
+import time
+
 from shared.logger.logger import log
 from shared.mqtt.back.send.alarm.mqtt_back_alarm_motion_payload import MqttBackAlarmMotionPayload
 from shared.mqtt.back.send.mqtt_back import MqttBackBatchClient
@@ -18,13 +20,24 @@ class DoorMotionSensor(Publisher):
         self.mqtt_client: MqttTelegrafBatchClient = mqtt_client
         self.send_client = MqttBackBatchClient()
 
+        self._candidate_state = None
+        self._candidate_since = None
+        self.debounce_time = 0.5  # seconds
 
     def poll(self):
-        motion = self.motion_input.is_motion()
-        if motion != self._last_state:
-            self._last_state = motion
-            event = MotionStateChanged(motion_detected=motion)
-            self.on_motion_change(event)
+        now = time.monotonic()
+        current = self.motion_input.is_motion()
+
+        if current != self._candidate_state:
+            self._candidate_state = current
+            self._candidate_since = now
+            return
+
+        if current != self._last_state:
+            if now - self._candidate_since >= self.debounce_time:
+                self._last_state = current
+                event = MotionStateChanged(motion_detected=current)
+                self.on_motion_change(event)
 
     def on_motion_change(self, event: MotionStateChanged):
         log("Motion detected!" if event.motion_detected else "No motion")

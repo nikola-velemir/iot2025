@@ -20,12 +20,12 @@ export class WebSocketService {
       heartbeatOutgoing: 4000,
     });
 
-    this.stompClient.onConnect = (frame) => {
+    this.stompClient.onConnect = (frame:any) => {
       this.state.next(true);
       onConnectCallback();
     };
 
-    this.stompClient.onStompError = (frame) => {
+    this.stompClient.onStompError = (frame:any) => {
       console.error('Broker reported error: ' + frame.headers['message']);
       console.error('Additional details: ' + frame.body);
     };
@@ -39,7 +39,7 @@ export class WebSocketService {
 
   subscribe(topic: string, callback: (payload: any) => void): any {
     if (this.isConnected()) {
-      return this.stompClient!.subscribe(topic, (message) => callback(JSON.parse(message.body)));
+      return this.stompClient!.subscribe(topic, (message:any) => callback(JSON.parse(message.body)));
     } else {
       console.error("STOMP client not connected yet.");
     }

@@ -35,6 +35,7 @@ public class AlarmConsumerService {
                 case "motion" -> motionDetectedPir();
                 case "gyro" -> motionDetectedGyro();
                 case "open_too_long" -> doorButtonNotPressedForMoreThan5Seconds();
+                case "door_closed_after_activation" -> doorClosedAfterActivation();
                 default -> System.out.println("Unknown message type received: " + type);
             }
 
@@ -95,7 +96,11 @@ public class AlarmConsumerService {
         System.out.println("MOTION DETECTED BY GYRO");
         activateAlarmIfArmed();
     }
-
+    private void doorClosedAfterActivation(){
+        System.out.println("DOOR CLOSED UPON ALARM ACTIVATION");
+        globalState.turnOffAlarm();
+        alarmProducerService.sendAlarmDeactivationSignal();
+    }
     private void doorButtonNotPressedForMoreThan5Seconds() {
         System.out.println("DOOR OPENED FOR MOE THAN 5 SECONDS");
         activateAlarmIfArmed();

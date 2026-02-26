@@ -19,7 +19,7 @@ def run_button(config, threads, stop_event, mqtt_client, sensor_name,full_name, 
 
     if not config['simulated']:
         log(f"Starting {sensor_name} sensor")
-        door_sensor = Button(GpioButton(config['pin']),full_name, sensor_name, device_name, mqtt_client)
+        door_sensor = Button(GpioButton(config['pins']["btn_pin"]),full_name, sensor_name, device_name, mqtt_client)
     else:
         log(f"Starting {sensor_name} simulator")
         door_sensor = Button(SimulatedButton(),full_name,  sensor_name, device_name, mqtt_client)
@@ -32,11 +32,11 @@ def run_button(config, threads, stop_event, mqtt_client, sensor_name,full_name, 
         )
 
     door_sensor.subscribe_multiple(subscribers)
-
+    poll_time = config.get("poll_time", 1)
     poller_thread = threading.Thread(
         name=f"{sensor_name}-poller",
         target=run_button_sensor_polling,
-        args=(door_sensor, stop_event),
+        args=(door_sensor, stop_event,poll_time),
         daemon=True
     )
 

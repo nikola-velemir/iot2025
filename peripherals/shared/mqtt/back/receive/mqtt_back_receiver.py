@@ -3,7 +3,7 @@ import time
 import json
 
 # Configuration
-BROKER = "192.168.0.3"
+BROKER = "192.168.0.5"
 PORT = 1883
 BASE_TOPIC = "back_receive"
 
@@ -30,9 +30,6 @@ class MqttReceiver:
     def on_message(self, client, userdata, msg):
         try:
             payload = msg.payload.decode("utf-8")
-            print(f"New Message Received")
-            print(f"Topic: {msg.topic}")
-            print(f"Payload: {payload}")
             # Call the custom callback if provided
             if self.message_callback:
                 self.message_callback(msg.topic, payload)

@@ -1,6 +1,8 @@
 import threading
 import time
 
+from RPi import GPIO
+
 from shared.actuators.buzzer.component import initialize_buzzer
 from shared.actuators.door_light.component import initialize_door_light
 from shared.alarm.alarm_system import AlarmSystem
@@ -26,9 +28,10 @@ if __name__ == '__main__':
     door_light = initialize_door_light(config["DL"],"DL", DEVICE_NAME, telgraf_client)
 
     alarm = AlarmSystem( "PI1_ALARM", DEVICE_NAME, telgraf_client, subscribers = [door_buzzer])
-
+    GPIO.setmode(GPIO.BCM)
     try:
-        #run_door_sensor(config['DS1'], threads, stop_event, telgraf_client, "DS1", DEVICE_NAME)
+
+        run_door_sensor(config['DS1'], threads, stop_event, telgraf_client, "DS1", DEVICE_NAME)
         dus = run_ultrasonic_sensor(config['DUS1'], threads, stop_event, telgraf_client, "DUS1", DEVICE_NAME)
         run_motion_sensor(config['DPIR1'], threads, stop_event, telgraf_client, "DPIR1", DEVICE_NAME, [dus, door_light])
         run_keypad(config['DMS'], threads, stop_event, telgraf_client, "DMS", DEVICE_NAME)
@@ -45,3 +48,5 @@ if __name__ == '__main__':
         log('Stopping app')
         for t in threads:
             stop_event.set()
+    finally:
+        GPIO.cleanup()

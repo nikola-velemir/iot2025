@@ -6,21 +6,26 @@
   <div class="info">
     <div class="color-picker-container">
       <label>Choose Display Color</label>
-      <div class="picker-row">
-        <div
-          class="color-preview"
-          [style.background-color]="selectedColor"
-          (click)="colorInput.click()">
-        </div>
 
-        <input
-          #colorInput
-          type="color"
-          [(ngModel)]="selectedColor"
-          style="display: none;">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-select [(ngModel)]="selectedColor">
+          <mat-select-trigger>
+            <div class="option-container">
+              <span class="color-swatch" [style.background-color]="getSelectedColorColor()"></span>
+              <span>{{ selectedColor }}</span>
+            </div>
+          </mat-select-trigger>
 
-        <span class="color-code">{{ selectedColor }}</span>
-      </div>
+          @for (color of COLORS; track color.name) {
+            <mat-option [value]="color.name">
+              <div class="option-container">
+                <span class="color-swatch" [style.background-color]="color.hex"></span>
+                <span>{{ color.name }}</span>
+              </div>
+            </mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
     </div>
   </div>
 

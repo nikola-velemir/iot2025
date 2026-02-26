@@ -30,5 +30,24 @@ class IRSensor(Publisher):
                 self.ir_input.is_simulated()
             )
         )
-
-        self.notify(command)
+        delegated_command = ""
+        if command == "1":
+            delegated_command = "RED"
+        elif command == "2":
+            delegated_command = "GREEN"
+        elif command == "3":
+            delegated_command = "BLUE"
+        elif command == "4":
+            delegated_command = "YELLOW"
+        elif command == "5":
+            delegated_command = "PURPLE"
+        elif command == "6":
+            delegated_command = "CYAN"
+        elif command == "7":
+            delegated_command = "WHITE"
+        elif command == "OK":
+            delegated_command = "ON"
+        elif command == "0":
+            delegated_command = "OFF"
+        if delegated_command != "":
+            self.notify(delegated_command)

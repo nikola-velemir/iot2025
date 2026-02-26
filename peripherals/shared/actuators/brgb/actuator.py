@@ -8,11 +8,14 @@ class BRGB(Subscriber):
     def __init__(self, output, name, device_name, mqtt_client):
         self.output = output
         self.name = name
-        self.telegraf_client = mqtt_client
+        self._telegraf_client = mqtt_client
         self.device_name = device_name
-        self.current_color = "OFF"
-        self.receive_client = MqttReceiver("brgb", self.msg_callback)
-        self.receive_client.start()
+
+        self._is_on = False
+        self._current_color = "WHITE"
+        self._receive_client = MqttReceiver("brgb", self.msg_callback)
+        self._receive_client.start()
+
 
     def msg_callback(self, topic, payload):
         if "BRGB_NEW_LIGHT" in payload:
@@ -23,22 +26,30 @@ class BRGB(Subscriber):
         log(f"[{self.name}] Actuator processing command: {event}")
 
         if event == "ON":
+
             self.turn_on()
+            self.set_color("WHITE")
         elif event == "OFF":
             self.turn_off()
         else:
+            if not self._is_on:
+                self.turn_on()
             self.set_color(event)
     def callback(self, event):
        self._handle_color_change(event)
 
     def set_color(self, color):
-        self.current_color = color
+        self._current_color = color
         log(f"{self.name} changed color to {color}")
+        self.output.set_color(color)
 
     def turn_on(self):
-        self.current_color = "WHITE"
+        self.output.turn_on()
+        self._current_color = "WHITE"
+        self.set_color("WHITE")
         log(f"{self.name} turned ON")
-        self.telegraf_client.send(
+        self._is_on = True
+        self._telegraf_client.send(
             MqttTelegrafSingleFieldPoint(
                 "BRGB",
                 self.device_name,
@@ -49,9 +60,11 @@ class BRGB(Subscriber):
         )
 
     def turn_off(self):
-        self.current_color = "OFF"
+        self.output.turn_off()
+        self._current_color = "OFF"
+        self._is_on = False
         log(f"🌑 {self.name} turned OFF")
-        self.telegraf_client.send(
+        self._telegraf_client.send(
             MqttTelegrafSingleFieldPoint(
                 "BRGB",
                 self.device_name,

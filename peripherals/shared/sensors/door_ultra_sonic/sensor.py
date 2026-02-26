@@ -44,20 +44,47 @@ class UltrasonicSensor(Subscriber):
             self._last_distance = distance
             self.on_distance_change(distance)
 
-    def get_direction(self, lookback_seconds=3.0):
+    def get_direction(self, lookback_seconds=2.0):
         now = time.time()
-        relevant_measurements = [d for t, d in self.history if now - t <= lookback_seconds]
 
-        if len(relevant_measurements) < 2:
+        # keep recent values only
+        relevant = [(t, d) for t, d in self.history if now - t <= lookback_seconds]
+
+        if len(relevant) < 5:
             return "Unknown"
 
-        first = relevant_measurements[0]
-        last = relevant_measurements[-1]
-        diff = first - last
+        # --- 1. Median smoothing (last 5 samples) ---
+        distances = [d for _, d in relevant]
+        window = 5
+        smoothed = []
 
-        if diff > 0.1:
+        for i in range(len(distances) - window + 1):
+            slice_ = distances[i:i + window]
+            smoothed.append(sorted(slice_)[window // 2])
+
+        if len(smoothed) < 3:
+            return "Unknown"
+
+        # --- 2. Compute slopes between consecutive values ---
+        slopes = [smoothed[i] - smoothed[i - 1] for i in range(1, len(smoothed))]
+
+        # --- 3. Ignore tiny noise ---
+        movement_threshold = 1.5  # cm
+        slopes = [s for s in slopes if abs(s) > 0.5]
+
+        if len(slopes) < 3:
+            return "Unknown"
+
+        # --- 4. Majority vote direction ---
+        positive = sum(1 for s in slopes if s > 0)
+        negative = sum(1 for s in slopes if s < 0)
+
+        total_movement = smoothed[0] - smoothed[-1]
+
+        if negative > positive and total_movement > movement_threshold:
             return "Entering"
-        elif diff < -0.1:
+
+        if positive > negative and total_movement < -movement_threshold:
             return "Exiting"
 
         return "Stationary/Unknown"
@@ -72,4 +99,4 @@ class UltrasonicSensor(Subscriber):
             )
         )
 
-        log(f"{self.name} - Distance: {distance:.2f} m")
+        #log(f"{self.name} - Distance: {distance:.2f} cm")

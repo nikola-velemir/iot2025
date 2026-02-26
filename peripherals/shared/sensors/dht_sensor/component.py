@@ -12,7 +12,7 @@ def run_dht_sensor(config, threads, stop_event, mqtt_client, sensor_name, device
         subscribers = []
     if not config['simulated']:
         log(f"Starting {sensor_name} hardware")
-        dht_input = GpioDHT(config['pin'])
+        dht_input = GpioDHT(config['pins']["dht_pin"])
     else:
         log(f"Starting {sensor_name} simulator")
         dht_input = SimulatedDHT()
@@ -34,7 +34,7 @@ def run_dht_sensor(config, threads, stop_event, mqtt_client, sensor_name, device
     def poller():
         while not stop_event.is_set():
             dht_sensor.poll()
-            time.sleep(config.get('interval', 5.0))
+            time.sleep(config.get('poll_time', 5.0))
 
     poller_thread = threading.Thread(target=poller, daemon=True)
     poller_thread.start()

@@ -3,40 +3,28 @@
     "description": "Stopwatch",
     "simulated": true,
     "pins": {
-      "a": 123,
-      "b": 114,
-      "c": 213,
-      "d": 132
     }
   },
   "DHT3": {
-    "description": "Door Sensor (Button)",
+    "description": "DHT sensor",
     "simulated": true,
+    "poll_time": 2.0,
     "pins": {
-      "a": 15,
-      "b": 14,
-      "c": 13,
-      "d": 12
+      "dht_pin": 14
     }
   },
   "GYR": {
     "description": "Gyroscope",
     "simulated": true,
+    "adress": "0x68",
     "pins": {
-      "a": 22,
-      "b": 34,
-      "c": 11,
-      "d": 0
+      "test": 321312312
     }
   },
   "DUS2": {
     "description": "Door Ultrasonic Sensor",
     "simulated": true,
     "pins": {
-      "a": 18,
-      "b": 19,
-      "c": 21,
-      "d": 20
     }
   },
   "DS2": {
@@ -51,7 +39,10 @@
   },
   "BTN": {
     "description": "Door Membrane Switch",
-    "simulated": true,
-    "pins": {}
+    "simulated": false,
+    "poll_time": 0.1,
+    "pins": {
+      "btn_pin": 23
+    }
   }
 }

@@ -1,6 +1,8 @@
 import threading
 import time
 
+from RPi import GPIO
+
 from shared.actuators.brgb.component import initialize_brgb
 from shared.actuators.lcd.component import initialize_lcd
 from shared.config import load_config
@@ -22,10 +24,10 @@ if __name__ == "__main__":
     lcd = initialize_lcd(config["LCD"],"LCD", DEVICE_NAME, telegraf_client)
 
     try:
-        run_dht_sensor(config["DHT2"], threads,stop_event, telegraf_client,"DHT2",DEVICE_NAME, subscribers=[lcd])
-        run_dht_sensor(config["DHT1"], threads,stop_event, telegraf_client,"DHT1",DEVICE_NAME, subscribers=[lcd])
+        #run_dht_sensor(config["DHT2"], threads,stop_event, telegraf_client,"DHT2",DEVICE_NAME, subscribers=[lcd])
+        #run_dht_sensor(config["DHT1"], threads,stop_event, telegraf_client,"DHT1",DEVICE_NAME, subscribers=[lcd])
         run_ir_sensor(config["IR"], threads, stop_event, telegraf_client, "IR", DEVICE_NAME, subscribers=[brgb])
-        run_motion_sensor(config["DPIR3"], threads, stop_event, telegraf_client, "DPIR3", DEVICE_NAME)
+        #run_motion_sensor(config["DPIR3"], threads, stop_event, telegraf_client, "DPIR3", DEVICE_NAME)
         threading.Thread(
             target=logger_loop,
             args=(stop_event,),
@@ -38,3 +40,5 @@ if __name__ == "__main__":
         log('Stopping app')
         for t in threads:
             stop_event.set()
+    finally:
+            GPIO.cleanup()
