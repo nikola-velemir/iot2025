@@ -1,6 +1,8 @@
 import threading
 import time
 
+from RPi import GPIO
+
 from shared.actuators.brgb.component import initialize_brgb
 from shared.actuators.lcd.component import initialize_lcd
 from shared.config import load_config
@@ -38,3 +40,5 @@ if __name__ == "__main__":
         log('Stopping app')
         for t in threads:
             stop_event.set()
+    finally:
+            GPIO.cleanup()

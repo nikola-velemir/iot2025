@@ -1,7 +1,7 @@
 {
   "DS1": {
     "description": "Door Sensor (Button)",
-    "simulated": true,
+    "simulated": false,
     "poll_time": 0.1,
     "pins": {
       "btn_pin": 23
@@ -16,7 +16,7 @@
   },
   "DUS1": {
     "description": "Door Ultrasonic Sensor",
-    "simulated": false,
+    "simulated": true,
     "poll_time": 0.2,
     "pins": {
       "trigger_pin":4,
@@ -25,7 +25,7 @@
   },
   "DB": {
     "description": "Door Buzzer",
-    "simulated": true,
+    "simulated": false,
     "frequency": 200,
     "duty_cycle": 50,
     "pins": {
@@ -34,7 +34,7 @@
   },
   "DPIR1": {
     "description": "Door Motion Sensor",
-    "simulated": true,
+    "simulated": false,
     "poll_time": 0.1,
     "pins": {
       "pir_pin": 25

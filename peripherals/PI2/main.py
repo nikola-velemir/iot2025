@@ -1,6 +1,8 @@
 import threading
 import time
 
+from RPi import GPIO
+
 from shared.actuators.stopwatch.actuator import KitchenStopwatch
 from shared.actuators.stopwatch.component import initialize_stopwatch
 from shared.actuators.stopwatch.output import SimulatedStopwatchOutput
@@ -47,3 +49,5 @@ if __name__ == '__main__':
         for t in threads:
             stop_event.set()
 
+    finally:
+        GPIO.cleanup()
