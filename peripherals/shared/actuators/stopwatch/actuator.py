@@ -9,7 +9,7 @@ from shared.sensors.button.event import ButtonEvent
 
 
 class KitchenStopwatch(Subscriber):
-    def __init__(self, output: TimerOutput, name, device_name, mqtt_client, add_seconds=10):
+    def __init__(self, output: TimerOutput, name, device_name, mqtt_client, add_seconds=60):
         self.output = output
         self.name = name
         self.device_name = device_name
