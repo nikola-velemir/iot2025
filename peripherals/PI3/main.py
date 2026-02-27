@@ -19,6 +19,7 @@ if __name__ == "__main__":
     threads = []
     stop_event = threading.Event()
     telegraf_client = MqttTelegrafBatchClient()
+    GPIO.setmode(GPIO.BCM)
 
     brgb = initialize_brgb(config["BRGB"],"BRGB", DEVICE_NAME, telegraf_client)
     lcd = initialize_lcd(config["LCD"],"LCD", DEVICE_NAME, telegraf_client)

@@ -54,5 +54,12 @@
       "C3": 20,
       "C4": 21
     }
+  },
+  "WEBC": {
+    "description": "Video camera",
+    "simulated": false,
+    "port": 9000,
+    "skip_validation": true
+
   }
 }

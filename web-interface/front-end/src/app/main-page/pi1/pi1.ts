@@ -16,7 +16,6 @@ import {CameraDialog} from '../../dialog/camera-dialog/camera-dialog';
 export class Pi1 {
     globalState = inject(GlobalStateService);
     dialog = inject(MatDialog);
-
     peripherals: PeripheralTabularView[] = [
       {
         name: 'DS1', type: 'Door sensor', peripheralType: 'Sensor',
@@ -58,7 +57,8 @@ export class Pi1 {
 
   openCamera = async () => {
     this.dialog.open(CameraDialog, {
-      height: '300px',
+      height: '500px',
+      width:'1000px'
     });
   }
 }

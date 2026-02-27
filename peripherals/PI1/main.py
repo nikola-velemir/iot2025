@@ -13,6 +13,7 @@ from shared.sensors.door_motion_sensor.component import run_motion_sensor
 from shared.sensors.door_sensor.component import run_door_sensor
 from shared.sensors.door_ultra_sonic.component import run_ultrasonic_sensor
 from shared.sensors.keypad.component import run_keypad
+from shared.sensors.webc.component import run_webc
 
 DEVICE_NAME = "PI1"
 if __name__ == '__main__':
@@ -23,30 +24,39 @@ if __name__ == '__main__':
     stop_event = threading.Event()
 
     telgraf_client = MqttTelegrafBatchClient()
-
-    door_buzzer = initialize_buzzer(config["DB"],"DB", DEVICE_NAME, telgraf_client)
-    door_light = initialize_door_light(config["DL"],"DL", DEVICE_NAME, telgraf_client)
-
-    alarm = AlarmSystem( "PI1_ALARM", DEVICE_NAME, telgraf_client, subscribers = [door_buzzer])
     GPIO.setmode(GPIO.BCM)
+
+    door_buzzer = initialize_buzzer(config["DB"], "DB", DEVICE_NAME, telgraf_client)
+    door_light = initialize_door_light(config["DL"], "DL", DEVICE_NAME, telgraf_client)
+
+    alarm = AlarmSystem("PI1_ALARM", DEVICE_NAME, telgraf_client, subscribers=[door_buzzer])
     try:
 
         run_door_sensor(config['DS1'], threads, stop_event, telgraf_client, "DS1", DEVICE_NAME)
         dus = run_ultrasonic_sensor(config['DUS1'], threads, stop_event, telgraf_client, "DUS1", DEVICE_NAME)
         run_motion_sensor(config['DPIR1'], threads, stop_event, telgraf_client, "DPIR1", DEVICE_NAME, [dus, door_light])
         run_keypad(config['DMS'], threads, stop_event, telgraf_client, "DMS", DEVICE_NAME)
-
+        webc = run_webc(config["WEBC"], stop_event)
         threading.Thread(
             target=logger_loop,
             args=(stop_event,),
             daemon=True
         ).start()
-        while True:
-            time.sleep(1)
+        stop_event.wait()
 
     except KeyboardInterrupt:
+
         log('Stopping app')
-        for t in threads:
-            stop_event.set()
+
+        stop_event.set()
+        GPIO.cleanup()
+        try:
+
+            for t in threads:
+                t.join(timeout=5)
+
+        except KeyboardInterrupt:
+
+            print("Forced shutdown")
     finally:
         GPIO.cleanup()

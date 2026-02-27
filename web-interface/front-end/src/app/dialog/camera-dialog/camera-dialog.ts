@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 
 @Component({
   selector: 'app-camera-dialog',
@@ -7,5 +7,5 @@ import { Component } from '@angular/core';
   styleUrl: './camera-dialog.scss',
 })
 export class CameraDialog {
-
+  cameraIp = "http://192.168.0.7:9000/?action=stream"
 }
