@@ -57,7 +57,7 @@ export class Pi1 {
 
   openCamera = async () => {
     this.dialog.open(CameraDialog, {
-      height: '500px',
+      height: '500px ',
       width:'1000px'
     });
   }
